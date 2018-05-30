@@ -1,14 +1,12 @@
 ## File Name: mice.1chain.R
-## File Version: 0.54
+## File Version: 0.61
 
-###############################################################################
-###############################################################################
-###############################################################################
+#*** apply mice algorithm in a single chain
 mice.1chain <- function(data, burnin=10, iter=20, Nimp=10,
-        method = NULL, where = NULL, visitSequence = NULL,
-        blots = NULL, post = NULL,
-        defaultMethod=c("pmm", "logreg", "polyreg", "polr"),
-        printFlag = TRUE, seed = NA, data.init=NULL, ...)
+            method = NULL, where = NULL, visitSequence = NULL,
+            blots = NULL, post = NULL,
+            defaultMethod=c("pmm", "logreg", "polyreg", "polr"),
+            printFlag = TRUE, seed = NA, data.init=NULL, ...)
 {
     CALL <- match.call()
 
@@ -39,17 +37,15 @@ mice.1chain <- function(data, burnin=10, iter=20, Nimp=10,
             "******************\n")
     utils::flush.console()
     implist[[1]] <- imp0 <- mice::mice( data, maxit=burnin, m=1,
-                method=method,
-                where = where,
-                visitSequence=visitSequence, blots = blots, post=post,
-                defaultMethod=defaultMethod,
-                printFlag=printFlag, seed=seed,
-                data.init=data.init, ... )
+                    method=method, where = where,
+                    visitSequence=visitSequence, blots = blots, post=post,
+                    defaultMethod=defaultMethod, printFlag=printFlag, seed=seed,
+                    data.init=data.init, ... )
     dat0 <- mice::complete( imp0, 1 )
     chainMean <- t( imp0$chainMean[,,1] )
     chainVar <- t( imp0$chainVar[,,1] )
     rownames(chainVar)[ nrow(chainVar) ] <-
-        rownames(chainMean)[ nrow(chainMean) ] <- "end_burnin"
+    rownames(chainMean)[ nrow(chainMean) ] <- "end_burnin"
     # imputation phase
 
     cat("\n\n************ IMPUTATION PHASE |", "Iterations", burnin+1, "-",
@@ -59,12 +55,11 @@ mice.1chain <- function(data, burnin=10, iter=20, Nimp=10,
         cat("\n --- Imputation", mm, "| Iterations",
         iterstep0[mm] + 1, "-", iterstep0[mm+1], "\n" )
         utils::flush.console()
-        implist[[mm+1]] <- imp1 <- mice::mice( data, maxit=iterstep[mm], m=1,
+        implist[[mm+1]] <- imp1 <- mice::mice( data, maxit=burnin, m=1,
                     method=method, where = where,
                     visitSequence=visitSequence, blots = blots, post=post,
-                    defaultMethod=defaultMethod,
-                    printFlag=printFlag, seed=seed,
-                    data.init=dat0, ... )
+                    defaultMethod=defaultMethod, printFlag=printFlag, seed=seed,
+                    data.init=data.init, ... )
         datlist[[mm]] <- dat0 <- mice::complete( imp1, 1 )
         chainMean <- rbind( chainMean, t( imp1$chainMean[,,1] ) )
         chainVar <- rbind( chainVar, t( imp1$chainVar[,,1] ) )
@@ -107,10 +102,8 @@ mice.1chain <- function(data, burnin=10, iter=20, Nimp=10,
     midsobj$call <- CALL
 
     res <- list( "midsobj"=midsobj, "datlist"=datlist, "datalong"=datalong,
-                    "implist"=implist,
-                     "chainMPar"=chainMPar,
-                    "chainVarPar"=chainVarPar,
-                    "chainMean"=chainMean, "chainVar"=chainVar,
+                    "implist"=implist, "chainMPar"=chainMPar,
+                    "chainVarPar"=chainVarPar, "chainMean"=chainMean, "chainVar"=chainVar,
                     "burnin"=burnin, "iter"=iter, "Nimp"=Nimp,
                     "time"=Sys.time()
                     )
@@ -135,29 +128,8 @@ summary.mids.1chain <- function( object, ... )
 }
 
 #--- print method
-print.mids.1chain <- function( x, ...){
+print.mids.1chain <- function( x, ...)
+{
     summary.mids.1chain( object=x, ...)
-    }
+}
 
-################################################################################
-# S3 plot method
-plot.mids.1chain <- function( x, plot.burnin=FALSE, ask=TRUE, ... ){
-    VV <- ncol( x$chainMean )
-    graphics::par(mfrow=c(2,2))
-    if (!plot.burnin){
-        iter_vec <- seq( x$burnin + 1, x$iter )
-                } else { iter_vec <- 1:x$iter }
-
-    for (vv in 1:VV){
-        plot( iter_vec, x$chainMean[ iter_vec, vv ], type="l",
-                    xlab="Iterations", ylab="M",
-                    main=paste0("Mean ", colnames(x$chainMean)[vv] )
-                                )
-        plot( iter_vec, sqrt( x$chainVar[ iter_vec, vv ] ), type="l",
-                    xlab="Iterations", ylab="SD",
-                    main=paste0("SD ", colnames(x$chainMean)[vv] )
-                                )
-        if (vv %% 2==0){ par(ask=ask) }
-                }
-    graphics::par(mfrow=c(1,1))
-        }
