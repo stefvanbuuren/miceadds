@@ -1,5 +1,5 @@
 %% File Name: mice.1chain.Rd
-%% File Version: 0.37
+%% File Version: 0.42
 
 \name{mice.1chain}
 \alias{mice.1chain}
@@ -17,10 +17,10 @@ multiply impute a dataset using a long chain instead of multiple parallel chains
 which is the approach employed in \code{mice::mice}.
 }
 \usage{
-mice.1chain(data, burnin=10, iter=20, Nimp=10, method = NULL,
-     where = NULL, visitSequence = NULL, blots = NULL, post = NULL,
+mice.1chain(data, burnin=10, iter=20, Nimp=10, method=NULL,
+     where=NULL, visitSequence=NULL, blots=NULL, post=NULL,
      defaultMethod=c("pmm", "logreg", "polyreg", "polr"),
-     printFlag = TRUE, seed = NA, data.init=NULL, ...)
+     printFlag=TRUE, seed=NA, data.init=NULL, ...)
 
 \method{summary}{mids.1chain}(object,...)
 
@@ -113,6 +113,8 @@ Multiple imputation can also be used for determining causal effects
 
 
 \examples{
+\dontrun{
+
 #############################################################################
 # EXAMPLE 1: One chain nhanes data
 #############################################################################
@@ -125,7 +127,6 @@ set.seed(9090)
 imp.mi1 <- miceadds::mice.1chain( nhanes, burnin=5, iter=40, Nimp=4,
                  method=rep("norm", 4 ) )
 summary(imp.mi1)       # summary of mids.1chain
-\dontrun{
 plot( imp.mi1 ) # trace plot excluding burnin iterations
 plot( imp.mi1, plot.burnin=TRUE ) # trace plot including burnin iterations
 >>>>>>> alexanderrobitzsch/master
@@ -247,9 +248,9 @@ smod4 <- summary( mice::pool(mod4) )
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{Imputation}
-\keyword{mids}
-\keyword{summary}
-\keyword{plot}
-\keyword{mids.1chain}
+%% \keyword{Imputation}
+%% \keyword{mids}
+%% \keyword{summary}
+%% \keyword{plot}
+%% \keyword{mids.1chain}
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
