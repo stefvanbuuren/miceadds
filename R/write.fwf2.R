@@ -1,8 +1,7 @@
 ## File Name: write.fwf2.R
-## File Version: 2.06
+## File Version: 2.09
 
 
-##############################################################################
 write.fwf2 <- function( dat, format.full, format.round, file )
 {
     savename <- file
@@ -30,7 +29,8 @@ write.fwf2 <- function( dat, format.full, format.round, file )
     } else {
         filename <- paste( savename, ".dat", sep="")
     }
-    utils::write.table( matr, file=filename, quote=FALSE, row.names=FALSE, col.names=FALSE, sep="")
+    utils::write.table( matr, file=filename, quote=FALSE, row.names=FALSE,
+                            col.names=FALSE, sep="")
     dfr <- data.frame( "variable"=colnames(dat),
                     "begin"=c( 1, cumsum( format.full )[ - ncol(dat) ] + 1 ),
                     "end"=cumsum( format.full ),  "length"=format.full )
@@ -38,5 +38,4 @@ write.fwf2 <- function( dat, format.full, format.round, file )
                 quote=FALSE, row.names=FALSE, col.names=TRUE)
     return(dfr)
 }
-##############################################################################
 

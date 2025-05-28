@@ -1,5 +1,5 @@
 %% File Name: mice.impute.pls.Rd
-%% File Version: 2.30
+%% File Version: 2.392
 
 \name{mice.impute.pls}
 \alias{mice.impute.pls}
@@ -16,10 +16,11 @@ reduction of the predictor space.
 }
 \usage{
 mice.impute.pls(y, ry, x, type, pls.facs=NULL,
-   pls.impMethod="pmm", pls.impMethodArgs=NULL, pls.print.progress=TRUE,
+   pls.impMethod="pmm", donors=5, pls.impMethodArgs=NULL, pls.print.progress=TRUE,
    imputationWeights=rep(1, length(y)), pcamaxcols=1E+09,
    min.int.cor=0, min.all.cor=0, N.largest=0, pls.title=NULL, print.dims=TRUE,
-   pls.maxcols=5000, envir_pos=NULL, extract_data=TRUE, ...)
+   pls.maxcols=5000, use_boot=FALSE, envir_pos=NULL, extract_data=TRUE,
+   remove_lindep=TRUE, derived_vars=NULL, ...)
 
 mice.impute.2l.pls2(y, ry, x, type, pls.facs=NULL, pls.impMethod="pmm",
    pls.print.progress=TRUE, imputationWeights=rep(1, length(y)), pcamaxcols=1E+09,
@@ -61,11 +62,15 @@ for all variables to be imputed.
 }
   \item{pls.impMethod}{Imputation method used for in PLS estimation.
         Any imputation method can be used except if \code{imputationWeights}
-  is provided. Then, only \code{norm} and \code{pmm} are available.
-The method \code{xplsfacs} creates only PLS factors of the regression
-model.
+  is provided. Imputation weights are available for \code{norm} and \code{pmm}.
+  Categorical variables can be imputed with the method \code{catpmm}
+ (see \code{\link{mice.impute.catpmm}}). For the method \code{catpmm},
+ multivariate PLS regression is employed for dummy-coded categories of
+ the outcome variable. The method \code{xplsfacs} creates only PLS factors
+ of the regression model.
 }
-
+\item{donors}{Number of donors if predictive mean matching is used
+(\code{pls.impMethod="pmm"}).}
 \item{pls.impMethodArgs}{Arguments for imputation method
 \code{pls.impMethod}.}
   \item{pls.print.progress}{
@@ -75,7 +80,8 @@ Print progress during PLS regression.
 Vector of sample weights to be used in imputation models.
 }
   \item{pcamaxcols}{
-Maximum number of principal components.
+Amount of variance explained by principal components (must be a number between
+0 and 1) or number of factors used in PCA (an integer larger than 1).
 }
   \item{min.int.cor}{
 Minimum absolute correlation for an interaction of two predictors
@@ -99,10 +105,16 @@ inputs should be printed.
 \item{pls.maxcols}{
 Maximum number of interactions to be created.
 }
+\item{use_boot}{Logical whether Bayesian bootstrap should be used for
+drawing regression parameters}
 \item{envir_pos}{Position of the environment from which the data should
 be extracted.}
 \item{extract_data}{Logical indicating whether input data should be extracted
 from parent environment within \code{\link[mice:mice]{mice::mice}}  routine}
+\item{remove_lindep}{Logical indicating whether linear dependencies should
+be automatically detected and some predictors are removed}
+\item{derived_vars}{Optional list containing formulas with derived variables for
+inclusion in PLS dimension reduction}
   \item{\dots}{
 Further arguments to be passed.
 }
@@ -125,7 +137,8 @@ is computed.
 \references{
 Mevik, B. H., & Wehrens, R. (2007). The \pkg{pls} package:
 Principal component and partial least squares regression in \R.
-\emph{Journal of Statistical Software}, \bold{18}, 1-24.
+\emph{Journal of Statistical Software, 18}, 1-24.
+\doi{10.18637/jss.v018.i02}
 }
 
 
@@ -171,31 +184,62 @@ pls.facs$IN1 <- 15   # use 15 PLS factors for variable IN1
 # choose norm or pmm imputation method
 pls.impMethod <- as.list( rep("norm", length(impMethod) ) )
 names(pls.impMethod) <- names(impMethod)
-pls.impMethod[ c("IN1","IN6")] <- "pmm5"
+pls.impMethod[ c("IN1","IN6")] <- "pmm"
 
 # some arguments for imputation method
 pls.impMethodArgs <- list( "IN1"=list( "donors"=10 ),
                            "IN2"=list( "ridge2"=1E-4 ) )
 
 # Model 1: Three parallel chains
-imp1 <- mice::mice(data=dat, imputationMethod=impMethod,
+imp1 <- mice::mice(data=dat, method=impMethod,
      m=3, maxit=5, predictorMatrix=predictorMatrix,
      pls.facs=pls.facs, # number of PLS factors
      pls.impMethod=pls.impMethod,  # Imputation Method in PLS imputation
      pls.impMethodArgs=pls.impMethodArgs, # arguments for imputation method
-     pls.print.progress=TRUE )
+     pls.print.progress=TRUE, ls.meth="ridge" )
 summary(imp1)
 
 # Model 2: One long chain
-imp2 <- miceadds::mice.1chain(data=dat, imputationMethod=impMethod,
+imp2 <- miceadds::mice.1chain(data=dat, method=impMethod,
      burnin=10, iter=21, Nimp=3, predictorMatrix=predictorMatrix,
      pls.facs=pls.facs, pls.impMethod=pls.impMethod,
-     pls.impMethodArgs=pls.impMethodArgs )
+     pls.impMethodArgs=pls.impMethodArgs, ls.meth="ridge" )
 summary(imp2)
+
+# Model 3: inclusion of additional derived variables
+
+# define derived variables for IN1
+derived_vars <- list( "IN1"=~I( ifelse( IN2>IN3, IN2, IN3 ) ) + I( sin(IN2) ) )
+
+imp3 <- miceadds::mice.1chain(data=dat, method=impMethod, derived_vars=derived_vars,
+     burnin=10, iter=21, Nimp=3, predictorMatrix=predictorMatrix,
+     pls.facs=pls.facs, pls.impMethod=pls.impMethod,
+     pls.impMethodArgs=pls.impMethodArgs, ls.meth="ridge" )
+summary(imp3)
+
+#*** example for using imputation function at the level of a variable
+
+# extract first imputed dataset
+imp1 <- mice::complete(imp1, action=1)
+data_imp1[ is.na(dat$IN1), "IN1" ] <- NA
+
+# define variables
+y <- data_imp1$IN1
+x <- data_imp1[, -1 ]
+ry <- ! is.na(y)
+cn <- colnames(dat)
+p <- ncol(dat)
+type <- rep(1,p)
+names(type) <- cn
+type["IN1"] <- 0
+
+# imputation of variable 'IN1'
+imp0 <- miceadds::mice.impute.pls(y=y, x=x, ry=ry, type=type, pls.facs=10, pls.impMethod="norm",
+             ls.meth="ridge", extract_data=FALSE )
 }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{Partial least squares regression (PLS)}
-\keyword{Dimension reduction}
-\keyword{mice imputation method}
+%% \keyword{Partial least squares regression (PLS)}
+%% \keyword{Dimension reduction}
+%% \keyword{mice imputation method}

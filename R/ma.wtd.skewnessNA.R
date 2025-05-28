@@ -1,13 +1,14 @@
 ## File Name: ma.wtd.skewnessNA.R
-## File Version: 0.09
+## File Version: 0.12
 
 
-###############################################################################
-# weighted skewness
+
+#--- weighted skewness
 ma.wtd.skewnessNA <- function( data, weights=NULL, vars=NULL,
-      method="unbiased" ){
+        method="unbiased" )
+{
     #*** pre-processing
-    res <- ma.wtd.aux.data(data=data, weights=weights, vars=vars )
+    res <- ma_wtd_stat_prepare_data(data=data, weights=weights, vars=vars )
     data <- res$data
     weights <- res$weights
     M <- length(data)
@@ -29,17 +30,14 @@ ma.wtd.skewnessNA <- function( data, weights=NULL, vars=NULL,
         if (method=="unbiased" ){
             wgtadj <- w1 - colSums( dataResp * weights^2 ) / w1
             wgtadj <- w1 / wgtadj
-            # wtd.var ...
-            #     sum(weights * ((x - xbar)^2))/(sw - sum(weights^2)/sw)
             sdx <- sqrt(wgtadj) * sdx
-                                }
+        }
         sdxM <- matrix( sdx, nrow=nrow(data1), ncol=length(sdx), byrow=TRUE)
         data1adj <- ( ( data1 - M_varsM ) / sdxM )^3 * dataResp
         M1 <- colSums( data1adj *  weights ) / sumweight
         res[ii,] <- M1
-                    }
+    }
     res <- colMeans(res)
     names(res) <- colnames(data[[1]])
-    return( res )
-        }
-###############################################################################
+    return(res)
+}

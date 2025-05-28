@@ -1,15 +1,14 @@
 ## File Name: save.data.R
-## File Version: 0.33
+## File Version: 0.384
 
 
-#########################################################################
-# miceadds: saving data
+#--- miceadds: saving data
 save.data <- function( data, filename, type="Rdata", path=getwd(),
                 row.names=FALSE, na=NULL, suffix=NULL, suffix_space="__",
                 index=FALSE, systime=FALSE,  ...)
 {
-    if (type=="sav"){
-        TAM::require_namespace_msg("sjlabelled")
+    if ("sav" %in% type){
+        require_namespace("sjlabelled")
     }
 
     #***
@@ -29,23 +28,33 @@ save.data <- function( data, filename, type="Rdata", path=getwd(),
         file <- save_data_calc_filename( file=file0, type="Rdata")
         save( data, file=file.path( dir, file ) )
     }
+    #*** RDS objects
+    if ( "RDS" %in% type  ){
+        file <- save_data_calc_filename( file=file0, type="RDS")
+        saveRDS( object=data, file=file.path( dir, file ) )
+    }
+
+
     #*** csv2 objects
     if ("csv2" %in% type  ){
         if ( is.null(na)){ na <- "" }
         file <- save_data_calc_filename( file=file0, type="csv2")
-        utils::write.csv2( x=data, file=file.path(dir,file), row.names=row.names, na=na,... )
+        utils::write.csv2( x=data, file=file.path(dir,file),
+                                row.names=row.names, na=na,... )
     }
     #*** csv objects
     if ("csv" %in% type ){
         if ( is.null(na)){ na <- "" }
         file <- save_data_calc_filename( file=file0, type="csv")
-        utils::write.csv( x=data, file=file.path(dir,file), row.names=row.names, na=na,  ... )
+        utils::write.csv( x=data, file=file.path(dir,file),
+                                row.names=row.names, na=na,  ... )
     }
     #*** table objects
     if ("table" %in% type ){
         if ( is.null(na)){ na <- "." }
         file <- save_data_calc_filename( file=file0, type="table")
-        utils::write.table( x=data, file=file.path(dir,file), na=na, row.names=row.names, ... )
+        utils::write.table( x=data, file=file.path(dir,file), na=na,
+                                row.names=row.names, ... )
     }
     #*** sav objects (SPSS objects)
     if ( "sav" %in% type ){
@@ -54,5 +63,3 @@ save.data <- function( data, filename, type="Rdata", path=getwd(),
         sjlabelled::write_spss( x=data, path=file.path( dir, file ) )
     }
 }
-#########################################################################
-

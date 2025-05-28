@@ -1,5 +1,5 @@
 %% File Name: scan.vector.Rd
-%% File Version: 0.18
+%% File Version: 0.23
 
 \name{scan.vec}
 \alias{scan.vec}
@@ -64,9 +64,10 @@ See \code{\link[base:scan]{base::scan}}.
 # EXAMPLE 1: Example scan.vec | reading a string
 #############################################################################
 
-vars <- miceadds::scan.vector( "female urbgrad  groesse  Nausg    grpgroesse   privat  ")
+
+vars <- miceadds::scan.vector( "urbgrad \\n  groesse  \\t  Nausg  grpgroesse   privat  ")
 vars
-  ## [1] "female"     "urbgrad"    "groesse"    "Nausg"      "grpgroesse"
+  ## [1] "urbgrad"    "groesse"    "Nausg"      "grpgroesse"
   ## [6] "privat"
 
 ## the next lines are only commented out to fulfill CRAN checks
@@ -75,5 +76,5 @@ vars
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{R utilities}
+%% \keyword{R utilities}
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

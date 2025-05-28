@@ -1,5 +1,5 @@
 %% File Name: subset_datlist.Rd
-%% File Version: 0.34
+%% File Version: 0.41
 
 \name{subset_datlist}
 \alias{subset_datlist}
@@ -115,6 +115,7 @@ then informations about the imputation procedure are lost.
 
 
 \examples{
+\dontrun{
 #############################################################################
 # EXAMPLE 1: Subsetting and selection of multiply imputed datasets
 #############################################################################
@@ -144,7 +145,6 @@ datlist2b
 datlist2c <- miceadds::subset_datlist( datlist1a, index=1:3, toclass="mids")
 datlist2c
 
-\dontrun{
 # select some variables
 datlist3a <- miceadds::subset_datlist( datlist1a, select=c("idstud", "books")  )
 datlist3a
@@ -168,14 +168,15 @@ datlist4b <- miceadds::subset_datlist( datlist1a, index=1:5,
                   select=c("idstud", "idschool","hisei"), toclass="mids" )
 datlist4b
 # The same functionality, but now applying to object of class mids datlist1d
-datlist4c <- subset( datlist1d, index=1:5, subset=datlist1a[[1]]$idschool < 1067,
-                     select=c("idstud", "idschool","hisei")  )
+datlist4c <- miceadds::subset_datlist( datlist1d, index=1:5,
+               subset=datlist1a[[1]]$idschool < 1067,
+               select=c("idstud", "idschool","hisei") )
 datlist4c
 
 # expression for selecting rows specific in each data frame
 # which can result in differently sized datasets (because the variable
 # migrant is imputed)
-datlist5a <- miceadds::subset_datlist( datlist1a,  expr_subset=migrant==1 )
+datlist5a <- miceadds::subset_datlist( datlist1a,  expr_subset=expression(migrant==1) )
 datlist5a
 
 # select the first 100 cases
@@ -195,8 +196,6 @@ dat <- data.timss4
 datlist1a <- miceadds::nested.datlist_create( dat )
 # create object of class 'NestedImputationList'
 datlist1b <- miceadds::NestedImputationList(dat)
-# create object of class 'mids.nmi'
-datlist1c <- miceadds::datlist2mids(dat)
 
 # select some between datasets
 datlist2a <- subset_nested.datlist( datlist1a, index_between=c(1,3,4) )
@@ -229,5 +228,5 @@ datlist5b
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{subset}
+%% \keyword{subset}
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

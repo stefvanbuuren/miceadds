@@ -1,5 +1,5 @@
 %% File Name: micombine.F.Rd
-%% File Version: 0.20
+%% File Version: 0.221
 
 \name{micombine.F}
 \alias{micombine.F}
@@ -56,7 +56,8 @@ Enders, C. K. (2010). \emph{Applied missing data analysis}. Guilford Press.
 
 Grund, S., Luedtke, O., & Robitzsch, A. (2016). Pooling ANOVA results from
 multiply imputed datasets: A simulation study.
-\emph{Methodology, 12}, 75-88.
+\emph{Methodology, 12}(3), 75-88.
+\doi{10.1027/1614-2241/a000111}
 }
 
 
@@ -84,5 +85,5 @@ micombine.F(Fvalues, df1=4 )
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{F statistic}
+%% \keyword{F statistic}
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

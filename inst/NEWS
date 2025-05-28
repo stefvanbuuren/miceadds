@@ -42,26 +42,438 @@ CHANGELOG miceadds
 
 
 
+
+--------------------------------------------------------------------------
+VERSIONS miceadds 3.18  |  2025-03-01  |  Last: miceadds 3.18-24
+--------------------------------------------------------------------------
+ 
+FIXED * fixed a bug in mice.impute.catpmm() if there is only one case with
+        missing data (thanks to Abdessattar Saoudi)
+ADDED * included argument 'formula_syn' in syn_da() for specifiying
+        nonlinear effects when synthesizing variables
+
+
+DATA  * ---
+EXAMP * syn_da (2)
+
+
+
+--------------------------------------------------------------------------
+VERSIONS miceadds 3.17  |  2024-01-08  |  Last: miceadds 3.17-44
+--------------------------------------------------------------------------
+ 
+ADDED * added argument 'derived_vars' in mice.impute.pls() for including
+        derived variables in PLS dimension reduction
+        (requested by Karoline Sachse)
+FIXED * fixed specification issues in mice.1chain()
+NOTE  * rechanged functionality of systime() due to changes of the 
+        Sys.time() function since R 4.3.1
+NOTE  * complete functions in miceadds are now declared as a method in
+        the manual. Moreover, renamed argument 'x' into 'data'
+        (requested by Kurt Hornik from the CRAN team)
+
+DATA  * ---
+EXAMP * mice.impute.pls (1), lm.cluster (3)
+
+--------------------------------------------------------------------------
+VERSIONS miceadds 3.16  |  2023-01-06  |  Last: miceadds 3.16-18
+--------------------------------------------------------------------------
+ 
+NOTE  * allow RDS objects in load.data() and save.data()
+NOTE  * added argument 'RDS' in load.Rdata2()
+NOTE  * automatically create missing directories in calls 
+        of files_move()
+ADDED * added function for generating synthetic data syn_da()
+        based on the data augmentation method of Jiang et al. (2022)
+FIXED * fixed an issue of not runnable models in 'ml.lmer' imputation 
+        method when random slopes are used (thanks to Rushani Wijesuriya)
+FIXED * tried to avoid numerical issue in 'mice.impute.pls' by including
+        several numerical checks (thanks to Karoline Sachse)
+
+DATA  * data.ma09
+EXAMP * ---
+
+--------------------------------------------------------------------------
+VERSIONS miceadds 3.15  |  2022-09-22  |  Last: miceadds 3.15-21
+--------------------------------------------------------------------------
+ 
+ADDED * included utility function datlist2Amelia()
+        (suggested by @atanasj, Github Issue #26)
+ADDED * added imputation function mice.impute.catpmm() that performs
+        multivariate predictive mean matching for categotical variables
+NOTE  * included imputation method 'catpmm' in mice.impute.pls()
+
+DATA  * ---
+EXAMP * datlist2Amelia (1), mice.impute.catpmm (1)
+
+--------------------------------------------------------------------------
+VERSIONS miceadds 3.14  |  2022-08-24  |  Last: miceadds 3.14-3
+--------------------------------------------------------------------------
+ 
+NOTE  * fixed issues in CRAN checks due to the recent use 
+        of KaTeX
+
+DATA  * ---
+EXAMP * ---
+
+--------------------------------------------------------------------------
+VERSIONS miceadds 3.13  |  2022-05-30  |  Last: miceadds 3.13-12
+--------------------------------------------------------------------------
+ 
+FIXED * fixed an issue with automatic removal of predictors in lme4::lmer()
+        for imputation methods '2l.norm' and '2l.pmm'
+        (thanks to Adam Kuczynski)
+
+DATA  * ---
+EXAMP * ---
+
 ---------------------------------------------------------------------
-VERSIONS miceadds 2.12  |  2018-05-29  |  Last: miceadds 2.12-15
+VERSIONS miceadds 3.12  |  2022-04-04  |  Last: miceadds 3.12-26
 ---------------------------------------------------------------------
 
-NOTE  * internal restructure of functions NMIwaldtest(), MIwaldtest()
+FIXED * fixed a bug in syn.mice()
+FIXED * fixed a bug in pool.mids.nmi()
+        (thanks to Francis Huang @flh3, Github issue #21)
+NOTE  * fixed memory issues in mice.impute.weighted.norm() and
+        and mice.impute.weighted.pmm() 
+        (thanks to Ryan Jarrett @jarretrt, Github issue #22)
+FIXED * fixed incorrect matching in mice.impute.weighted.pmm()
+        (thanks to Ryan Jarrett @jarretrt, Github issue #23)
+FIXED * fixed a bug in imputation method 'ml.lmer' when no
+        aggragated variables are used
+ADDED * added argument 'iter_re' in mice.impute.ml.lmer()
+ADDED * added argument 'elim' in gm() and GroupMean()
+NOTE  * fixed issues in Rcpp code: warning: use of bitwise '&' 
+        with boolean operands [-Wbitwise-instead-of-logical]
+        (https://cran.r-project.org/web/checks/check_results_miceadds.html;
+        communicated by Kurt Hornik)
+NOTE  * no longer export mice.impute.grouped() because
+        dependent grouped package is no longer available on CRAN
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: syn.mice (1)
+
+---------------------------------------------------------------------
+VERSIONS miceadds 3.11  |  2021-01-21  |  Last: miceadds 3.11-6
+---------------------------------------------------------------------
+
+FIXED * fixed a bug in ml_mcmc() when using the argument
+        'inits_lme4=FALSE' (thanks to a discussion with
+        Rushani Wijesuriya regarding the mdmb::frm_fb() function)
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: ---
+
+---------------------------------------------------------------------
+VERSIONS miceadds 3.10  |  2020-07-29  |  Last: miceadds 3.10-28
+---------------------------------------------------------------------
+
+ADDED * added wrapper function syn.mice() for including mice imputation
+        methods for use in synthpop package for synthesizing data
+ADDED * added synthesizing method syn.constant() for using fixed
+        values of a variable.
+ADDED * included imputation method mice.impute.constant() for
+        imputation of a known vector of values
+ADDED * added wrapper function mice.impute.synthpop() for using a
+        synthpop synthesizing method in the mice package
+ADDED * function syn_mice() allows generation of synthesized data
+        using mice imputation methods
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: syn.mice (1), syn.constant (1),
+        mice.impute.synthpop (1), syn_mice (1), 
+        mice.impute.constant(1)
+
+---------------------------------------------------------------------
+VERSIONS miceadds 3.9  |  2020-05-09  |  Last: miceadds 3.9-14
+---------------------------------------------------------------------
+
+FIXED * fixed a bug in mice.impute.smcfcs() (thanks to Bryor Snefjella)
+NOTE  * included example of substantive model with quadratic effects in
+        mice.impute.smcfcs() (provided by Bryor Snefjella)
+ADDED * included wrapper imputation functions to imputeR package in
+        mice.impute.imputeR.lmFun() and mice.impute.imputeR.cFun()
+ADDED * included wrapper imputation methods to simputation package
+        in mice.impute.simputation() function
+        
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: mice.impute.smcfcs (2),
+        mice.impute.imputeR.lmFun (1), mice.impute.simputation (1)
+
+---------------------------------------------------------------------
+VERSIONS miceadds 3.8  |  2020-02-17  |  Last: miceadds 3.8-9
+---------------------------------------------------------------------
+
+NOTE  * included '\dontrun{}' in ?jomo2datlist (due to changes in
+        mice package; requested by Stef van Buuren)
+FIXED * fixed handling of factor levels in subset_datlist()
+        (thanks to @jwilliman; Github issue #20)
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: ---
+
+---------------------------------------------------------------------
+VERSIONS miceadds 3.7  |  2019-12-15  |  Last: miceadds 3.7-6
+---------------------------------------------------------------------
+
+FIXED * changes in ma.wtd.stats() functions because since R 4.0
+        matrices are also of class "array" which causes ambiguity
+        in code evaluation (requested by CRAN checks)
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: ---
+
+---------------------------------------------------------------------
+VERSIONS miceadds 3.6  |  2019-11-04  |  Last: miceadds 3.6-21
+---------------------------------------------------------------------
+
+FIXED * fixed a bug in ma.wtd.covNA() and ma.wtd.corNA() functions
+        (thanks to Thomas Kiefer)
+NOTE  * subset_datlist() now also works for list of datasets with
+        unequal number of cases (thanks to Michael Grosche)
+NOTE  * added an example involving partial correlations in
+        micombine.cor() (thanks to Carolin Just)
+NOTE  * allow vector argument of variables of 'partial' in 
+        micombine.cor()
+FIXED * fixed a bug with handling factor variables in 
+        mice.impute.2lonly.function()
+        (thanks to @markseeto, Github issue #19)
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: micombine.cor (1)
+
+---------------------------------------------------------------------
+VERSIONS miceadds 3.5  |  2019-08-23  |  Last: miceadds 3.5-14
+---------------------------------------------------------------------
+
+FIXED * fixed issue with missing type argument in user-defined
+        imputation models in mice.impute.pls() function
+FIXED * fixed a bug in pool.mids.nmi() due to changes in 
+        arguments in mice::pool() function
+        (thanks to Christian Schwahn)
+NOTE  * corrected an error in manual for subset_datlist() for
+        argument 'expr_subset' (thanks to Michael Grosche)
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: subset_datlist (1,2)
+
+---------------------------------------------------------------------
+VERSIONS miceadds 3.4  |  2019-06-19  |  Last: miceadds 3.4-17
+---------------------------------------------------------------------
+
+FIXED * fixed a bug with missing parameter names in MIwaldtest()
+        (thanks to Joost van Ginkel)
+FIXED * fixed issues in cases with one or no predictors in
+        mice.impute.ml.lmer()
+FIXED * fixed bug in mice.impute.ml.lmer() with more than one random
+        effect if lme4 automatically changes the order of random
+        effects in model output
+NOTE  * handle cases of removed predictors in mice.impute.ml.lmer()
+        by lme4::lmer() function (thanks to Rushani Wijesuriya)
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: ---
+
+---------------------------------------------------------------------
+VERSIONS miceadds 3.3  |  2019-05-11  |  Last: miceadds 3.3-33
+---------------------------------------------------------------------
+
+ADDED * added imputation methods "rlm", "lqs", "lm" and "lm_fun"
+        based on robust and non-robust linear models and 
+        transformations of dependent variable
+NOTE  * included argument 'col1_numeric' in split_to_matrix()
+NOTE  * corrected a mistake in ?mice.impute.ml.lmer manual
+        (thanks to Rima Izem)
+ADDED * included argument 'remove_lindep' in mice.impute.pls()
+        which allows to enable the procedure for removing predictors
+NOTE  * replaced multiwaycov package by sandwich package in
+        lm.cluster() and glm.cluster (thanks to @jaySf, Github issue #16).
+        Included arguments 'weights' and 'subset' in these functions.
+NOTE  * included argument 'donors' in mice.impute.pls()
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: mice.impute.rlm (1),
+        filename_split (5), mice.impute.ml.lmer (1)
+
+---------------------------------------------------------------------
+VERSIONS miceadds 3.2  |  2019-04-15  |  Last: miceadds 3.2-48
+---------------------------------------------------------------------
+
+NOTE  * changed default 'inits_lme4=TRUE' to 'inits_lme4=FALSE' (do not
+        use lme4::lmer() for starting values) in ml_mcmc()
+NOTE  * use optimizer 'bobyqa' by default in multilevel imputations which 
+        rely on lme4 package (mice.impute.2l.foo() for foo="pmm","binary"
+        and "continuous" and mice.impute.ml.lmer()) if a 'control' argument 
+        is not provided to lme4::lmer() or lme4::glmer()
+FIXED * fixed a bug in handling arguments in mice.impute.ml.lmer()
+FIXED * fixed a bug in ma.wtd.statsNA() functions for objects of class
+        BIFIEdata if a statistic for a single variable is requested
+        (thanks to Peter Lenz)
+NOTE  * included argument 'ridge' in ml_mcmc() and ml_mcmc_fit() for
+        stabilizing MCMC sampling in case of convergence issues
+NOTE  * change in computing matches for weighted predictive mean matching
+        (function mice.impute.weighted.pmm())
+FIXED * fixed a bug in NMIcombine() with inference of a single parameter
+NOTE  * included example of using mice.impute.pls() at the level of
+        a variable
+FIXED * fixed a bug in formula handling of ml_mcmc()
+ADDED * included option for Bayesian bootstrap in mice.impute.pls()
+        by requesting 'use_boot=TRUE'
+NOTE  * included argument 'wt' in pca.covridge()
+NOTE  * exported utility function mice_imputation_get_states()
+NOTE  * included argument 'wy' in mice.impute.weighted.norm(),
+        mice.impute.weighted.pmm(), mice.impute.bygroup() and
+        mice.impute.2lonly.function()
+NOTE  * changed internal handling of grouping variable in
+        mice.impute.bygroup() (due to an example provided by 
+        Sandro Tsang; Github issue #15)
+ADDED * included substantive model compatible imputation in
+        mice.impute.smcfcs() method
+NOTE  * removed mice.impute.2l.eap() function
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: mice.impute.ml.lmer (1.2),
+        mice.impute.pls (1), mice.impute.smcfcs (1)
+
+---------------------------------------------------------------------
+VERSIONS miceadds 3.1  |  2019-03-18  |  Last: miceadds 3.1-37
+---------------------------------------------------------------------
+
+NOTE  * included argument '...' in grep.vec() for passing arguments to
+        base::grep() (thanks to Boris Girnat)
+NOTE  * handle now strings of length one in string_to_matrix()
+FIXED * fixed labeling issue in ma.wtd.corNA() functions when applied
+        to BIFIEdata objects (thanks to Peter Lenz)
+NOTE  * fixed a bug in Example 2 of ?NMIWaldtest caused by changes in
+        mice::pool() output (thanks to Joost van Ginkel)
+NOTE  * included argument 'path2_name' in files_move()
+ADDED * included arguments 'psi_nu0_list' and 'psi_S0_list' in ml_mcmc()
+        for specification of inverse Wishart prior distribution for
+        covariance matrix of random effects
+FIXED * fixed a bug in ml_mcmc() when formula arguments was used
+NOTE  * changed default to noninformative prior distributions in
+        ml_mcmc(), i.e. nu0=-3 scale degrees of freedom and zero
+        diagonal scale matrix
+NOTE  * changed default argument values of 'type' in load.data() and
+        load.files() to 'NULL'
+NOTE  * fixed warning message of incorrect argument use of 
+        'imputationMethod' in datalist2mids() (thanks to Valentin Fuchs) 
+NOTE  * Replaced all remaining 'imputationMethod' arguments in 
+        mice::mice() by 'method' in the manual
+NOTE  * allowed factor variables for PMM imputation methods 'pmm3',
+        'pmm4', 'pmm5', 'pmm6', '2l.contextual.pmm', '2l.pmm',
+        'bygroup', '2lonly.function', 'ml.lmer', 'pls',
+        'tricube.pmm', 'tricube.pmm2'
+NOTE  * imputation method 'tricube.pmm2' is renamed as 'tricube.pmm'.
+        The imputation method 'tricube.pmm2' is now defunct.
+ADDED * added import format 'xlsx' (or 'xls') in load.data() function
+        using the readxl::read_excel function (package readxl is now 
+        included in list of 'Suggests' packages)
+ADDED * added user-defined data input function in load.data() by
+        including the argument 'load_fun'
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: filename_split (4),
+        NMIWaldtest (2), mi.anova (1), load.data (1)
+
+---------------------------------------------------------------------
+VERSIONS miceadds 3.0  |  2018-12-11  |  Last: miceadds 3.0-16
+---------------------------------------------------------------------
+
+NOTE  * included separator "\t" in scan.vec() (thanks Thomas Kiefer)
+FIXED * fixed bug in 'summary' method of glm.cluster() 
+        (thanks to tra6sdc; Github issue #14)
+NOTE  * included utility function load.files() for reading multiple
+        files in a data frame
+NOTE  * corrected a bug in mice.impute.2l.pls2() and in Example 1 of
+        ?mice.impute.pls (thanks to a discussion with Peter Lenz)
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: scan.vec (1)
+
+---------------------------------------------------------------------
+VERSIONS miceadds 2.15  |  2018-10-19  |  Last: miceadds 2.15-22
+---------------------------------------------------------------------
+
+NOTE  * internal changes in mice.imputation.ml.lmer() caused
+        by application within mice.impute.bygroup() imputation method
+        (thanks to Sophie Stallasch; Github issue #12)
+NOTE  * renamed ma.wtd.curtosisNA() into ma.wtd.kurtosisNA()
+ADDED * included simulation function fleishman_sim() for generating
+        non-normal data based on Fleishman polynomial
+ADDED * included simulation functions  nnig_sim() and nnig_coef()
+        for simulating multivariate linearly related non-normally
+        distributed variables (Foldnes & Olsson, 2016)
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: ma.wtd.statNA (1), fleishman_sim (1),
+        nnig_sim (1)
+
+---------------------------------------------------------------------
+VERSIONS miceadds 2.14  |  2018-09-18  |  Last: miceadds 2.14-26
+---------------------------------------------------------------------
+
+NOTE  * corrected Example 2 in ?micombine.cor (thanks to jamesrrae; #9)
+FIXED * fixed a bug in mice.impute.bygroup() with two-level imputation
+        models if factor variables are used (see Example 2 in
+        ?mice.impute.bygroup)
+FIXED * fixed numerical problems when principal component analysis
+        is used for dimension reduction
+NOTE  * included some examples of using mice::make.predictorMatrix()
+        and mice::make.method() functions in the miceadds manual
+NOTE  * included argument 'pls.facs' for PLS dimension reduction in
+        mice.impute.2l.contextual.pmm() and mice.impute.2l.contextual.norm()
+        (communicated by Laura Helbling)
+
+DATA  * included/modified datasets: ---
+EXAMP * included/modified examples: micombine.cor (2),
+        mice.impute.bygroup (2), mice.impute.2l.contextual.pmm (1)
+
+---------------------------------------------------------------------
+VERSIONS miceadds 2.13  |  2018-07-05  |  Last: miceadds 2.13-63
+---------------------------------------------------------------------
+
+ADDED * included group mean function gm() and centering around
+        group mean function cwc()
+NOTE  * included utility functions ma_lme4_formula_terms() and 
+        ma_lme4_formula_design_matrices() for handling lme4 formulas 
+        and generating design matrices for mixed effects models
+FIXED * fixed a bug in mice.impute.weighted.norm() and ...pmm()
+        due to recent changes in mice 3.0
+ADDED * added MCMC function ml_mcmc() and ml_mcmc_fit() for 
+        estimating mixed effects models. Exported several 
+        sub-functions of ml_mcmc().
+NOTE  * included utility function string_to_matrix() for
+        converting string vectors into matrices
+NOTE  * added utility functions filename_split_vec() and
+        Rcppfunction_remove_classes()
+ADDED * added functions lmer_vcov() and lmer_pool() for inference
+        of lme4 models for multiply imputed datasets
+
+DATA  * included/modified datasets: data.ma08
+EXAMP * included/modified examples: GroupMean (2),
+        ma_lme4_formula_terms (1,2), ml_mcmc (1), filename_split(3), 
+        Rfunction_include_argument_values (1), lmer_vcov (1,2)
+
+---------------------------------------------------------------------
+VERSIONS miceadds 2.12  |  2018-06-06  |  Last: miceadds 2.12-24
+---------------------------------------------------------------------
+
+NOTE  * internal restructure of functions NMIwaldtest() and
+        MIwaldtest()
 FIXED * fixed broken functions due to changes in recent CRAN
         version mice 3.0.0 (communicated by Stef van Buuren):
         mice.impute.plausible.values(), mice.1chain(), 
+        mice.impute.ml.lmer(), mice.impute.2l.pls2()
 ADDED * added utility function mice_inits(), ma_exists_get(),
         ma_exists()
 NOTE  * included argument 'remove_empty' in string_extract_part()
-NOTE  * included argument 'cluster_var' for specifying clusteer-level
+NOTE  * included argument 'cluster_var' for specifying cluster-level
         variable in mice.impute.2lonly.function()
-
 
 DATA  * included/modified datasets: ---
 EXAMP * included/modified examples: mice.impute.plausible.values (1),
-        mice_inits (1), 
-
-
+        mice_inits (1)
 
 ---------------------------------------------------------------------
 VERSIONS miceadds 2.11  |  2018-05-21  |  Last: miceadds 2.11-87
@@ -161,7 +573,7 @@ ADDED * added imputation function mice.impute.ml.lmer() for imputation
         imputation at higher levels is accomodated.
 NOTE  * added utility functions ma_rmvnorm(), 
         Rfunction_include_argument_values() and
-        Rfunction_output_list_result_function ()
+        Rfunction_output_list_result_function()
 
 DATA  * included/modified datasets: data.ma07
 EXAMP * included/modified examples: jomo2datlist (1), 

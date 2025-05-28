@@ -1,17 +1,16 @@
 ## File Name: NMIwaldtest.R
-## File Version: 0.27
+## File Version: 0.292
 
 
-##############################################################
-# Wald test for nested multiply imputed datasets
+#--- Wald test for nested multiply imputed datasets
 NMIwaldtest <- function( qhat, u, Cdes=NULL, rdes=NULL, testnull=NULL )
 {
     # convert qhat into a list if necessary
-    if ( class(qhat)=="array" ){
+    if ( inherits(qhat,"array") ){
         qhat <- NMIwaldtest_qhat2list(qhat=qhat)
     }
     # convert u into a list
-    if ( class(u)=="array" ){
+    if ( inherits(u,"array") ){
         u <- NMIwaldtest_u2list(u=u)
     }
     if ( ! is.null(testnull) ){
@@ -32,7 +31,7 @@ NMIwaldtest <- function( qhat, u, Cdes=NULL, rdes=NULL, testnull=NULL )
     qhat0 <- qhat
     u0 <- u
     for (bb in 1:NB){
-       for (ww in 1:NW){
+        for (ww in 1:NW){
             u00 <- u0[[bb]][[ww]]
             qhat[[bb]][[ww]] <- ( Cdes %*% qhat0[[bb]][[ww]] - rdes )[,1]
             u[[bb]][[ww]] <- Cdes %*% u00 %*% t(Cdes)
@@ -44,5 +43,3 @@ NMIwaldtest <- function( qhat, u, Cdes=NULL, rdes=NULL, testnull=NULL )
     class(res) <- "NMIwaldtest"
     return(res)
 }
-
-

@@ -1,5 +1,5 @@
 %% File Name: mice.nmi.Rd
-%% File Version: 0.21
+%% File Version: 0.241
 
 \name{mice.nmi}
 \alias{mice.nmi}
@@ -52,7 +52,8 @@ Object of class \code{mids.nmi} with entries
 }
 \references{
 Rubin, D. B. (2003). Nested multiple imputation of NMES via partially
-incompatible MCMC. \emph{Statistica Neerlandica}, \bold{57(1)}, 3-18.
+incompatible MCMC. \emph{Statistica Neerlandica, 57}(1), 3-18.
+\doi{10.1111/1467-9574.00217}
 }
 
 
@@ -118,5 +119,5 @@ summary(imp2)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{Nested multiple imputation}
+%% \keyword{Nested multiple imputation}
 % \keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

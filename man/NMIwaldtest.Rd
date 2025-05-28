@@ -1,5 +1,5 @@
 %% File Name: NMIwaldtest.Rd
-%% File Version: 0.19
+%% File Version: 0.271
 
 \name{NMIwaldtest}
 \alias{NMIwaldtest}
@@ -16,8 +16,8 @@ Wald Test for Nested Multiply Imputed Datasets
 \description{
 Performs a Wald test for nested multiply imputed datasets (\code{NMIwaldtest})
 and ordinary multiply imputed datasets (\code{MIwaldtest}),
-see Reiter and Raghanuthan (2007).
-The correspondent statistic is also called the \eqn{D_1} statistic.
+see Reiter and Raghunathan (2007).
+The corresponding statistic is also called the \eqn{D_1} statistic.
 
 The function \code{create.designMatrices.waldtest} is a helper function
 for the creation of design matrices.
@@ -28,11 +28,11 @@ NMIwaldtest(qhat, u, Cdes=NULL, rdes=NULL, testnull=NULL)
 
 MIwaldtest(qhat, u, Cdes=NULL, rdes=NULL, testnull=NULL)
 
-\method{summary}{NMIwaldtest}(object,digits=4,...)
+\method{summary}{NMIwaldtest}(object, digits=4,...)
 
-\method{summary}{MIwaldtest}(object,digits=4,...)
+\method{summary}{MIwaldtest}(object, digits=4,...)
 
-create.designMatrices.waldtest( pars, k )
+create.designMatrices.waldtest(pars, k)
 }
 
 
@@ -77,8 +77,8 @@ List with following entries
 
 \references{
 Reiter, J. P. and Raghunathan, T. E. (2007). The multiple adaptations of multiple
-imputation. \emph{Journal of the American Statistical Association},
-\bold{102}, 1462-1471.
+imputation. \emph{Journal of the American Statistical Association, 102}(480), 1462-1471.
+\doi{10.1198/016214507000000932}
 }
 
 
@@ -107,7 +107,7 @@ datlist <- data.timss2
 M <- length(datlist)
 for (ll in 1:M){
     datlist[[ll]] <- datlist[[ll]][, -c(1:4) ]
-               }
+}
 
 #***************
 # (1) nested multiple imputation using mice
@@ -180,9 +180,9 @@ pres1 <- mice::pool( res1 )
 summary(pres1)
 
 # Wald test for zero interaction effects
-qhat <- pres1$qhat
-u <- pres1$u
-pars <- dimnames(pres1$qhat)[[2]]
+qhat <- mitools::MIextract(res1$analyses, fun=coef)
+u <- mitools::MIextract(res1$analyses, fun=vcov)
+pars <- names(qhat[[1]])
 des <- miceadds::create.designMatrices.waldtest( pars=pars, k=2)
 Cdes <- des$Cdes
 rdes <- des$rdes
@@ -220,5 +220,5 @@ summary(wres2)
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{Nested multiple imputation}
-\keyword{summary}% __ONLY ONE__ keyword per line
+%% \keyword{Nested multiple imputation}
+%% \keyword{summary}% __ONLY ONE__ keyword per line

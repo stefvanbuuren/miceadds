@@ -1,5 +1,5 @@
 %% File Name: lm.cluster.Rd
-%% File Version: 0.32
+%% File Version: 0.376
 
 \name{lm.cluster}
 \alias{lm.cluster}
@@ -21,17 +21,17 @@ Cluster Robust Standard Errors for Linear Models and General Linear Models
 Computes cluster robust standard errors for linear models
 (\code{\link[stats:lm]{stats::lm}}) and general linear models
 (\code{\link[stats:glm]{stats::glm}}) using the
-\code{\link[multiwayvcov:cluster.vcov]{multiwayvcov::cluster.vcov}}
-function in the \pkg{multiwayvcov} package.
+\code{\link[sandwich:vcovCL]{multiwayvcov::vcovCL}}
+function in the \pkg{sandwich} package.
 }
 
 % \code{\link[TAM:tam.fa]{tam.fa}} (\pkg{TAM})
 % multiwayvcov::cluster.vcov( model=mod, cluster=dfr)
 
 \usage{
-lm.cluster(data, formula, cluster, ...)
+lm.cluster(data, formula, cluster, weights=NULL, subset=NULL )
 
-glm.cluster(data, formula, cluster, ...)
+glm.cluster(data, formula, cluster, weights=NULL, subset=NULL, family="gaussian" )
 
 \method{summary}{lm.cluster}(object,...)
 \method{summary}{glm.cluster}(object,...)
@@ -56,6 +56,10 @@ An \R formula
 Variable name for cluster variable contained in \code{data} or a vector
 with cluster identifiers
 }
+\item{subset}{Optional vector specifying a subset of observations to be used.}
+\item{weights}{Optional vector of weights to be used.}
+\item{family}{Description of the error distribution and link function to be used in
+the model, see \code{\link[stats:glm]{stats::glm}}.}
   \item{\dots}{
 Further arguments to be passed to \code{\link[stats:lm]{stats::lm}} and
 \code{\link[stats:glm]{stats::glm}}
@@ -85,19 +89,22 @@ List with following entries
 
 
 
-%\note{
-%%  ~~further notes~~
-%}
+\note{
+If \code{lm.cluster} is used inside a function, add \code{wgt__ <<- weight} for
+assigning the \code{weight} to \code{wgt__} in the global environment.
+}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
 \code{\link[stats:lm]{stats::lm}}, \code{\link[stats:glm]{stats::glm}},
-\code{\link[multiwayvcov:cluster.vcov]{multiwayvcov::cluster.vcov}}
+\code{\link[sandwich:vcovCL]{sandwich::vcovCL}}
 }
 
 
 \examples{
+\dontrun{
+
 #############################################################################
 # EXAMPLE 1: Cluster robust standard errors data.ma01
 #############################################################################
@@ -125,7 +132,6 @@ coef(mod2)
 vcov(mod2)
 summary(mod2)
 
-\dontrun{
 #############################################################################
 # EXAMPLE 2: Cluster robust standard errors for multiply imputed datasets
 #############################################################################
@@ -136,7 +142,7 @@ dat <- data.ma05
 
 # imputation of the dataset: use six imputations
 resp <- dat[, - c(1:2) ]
-imp <- mice::mice( resp, imputationMethod="norm", maxit=3, m=6 )
+imp <- mice::mice( resp, method="norm", maxit=3, m=6 )
 datlist <- miceadds::mids2datlist( imp )
 
 # linear regression with cluster robust standard errors
@@ -165,11 +171,61 @@ dimnames(uhat) <- list( beta_names, beta_names, NULL )
 # compute global F-test
 Ftest <- mitml::testConstraints( qhat=betas, uhat=vars, constraints=constraints )
 print(Ftest)
+
+#############################################################################
+# EXAMPLE 3: Comparing miceadds::lm.cluster() and lme4::lmer()
+#############################################################################
+
+data(data.ma01, package="miceadds")
+dat <- na.omit(data.ma01)
+
+# center hisei variable
+dat$hisei <- dat$hisei - mean(dat$hisei)
+
+# define school mean hisei
+dat$hisei_gm <- miceadds::GroupMean(dat$hisei, dat$idschool, extend=TRUE)[,2]
+dat$cluster_size <- miceadds::GroupSum(1+0*dat$hisei, dat$idschool, extend=TRUE)[,2]
+dat$hisei_wc <- dat$hisei - dat$hisei_gm
+
+#*** Model 1a: lm, hisei with clustering
+mod1a <- miceadds::lm.cluster( data=dat, formula=read~hisei, cluster="idschool" )
+
+#*** Model 1b: lmer, hisei
+mod1b <- lme4::lmer( data=dat, formula=read~hisei+(1|idschool) )
+
+cbind( coef(mod1a), fixef(mod1b))
+ ##  > cbind( coef(mod1a), fixef(mod1b))
+ ##                    [,1]        [,2]
+ ##  (Intercept) 509.181691 507.8684752
+ ##  hisei         1.524776   0.8161745
+
+# variance explanation
+vmod1b <- r2mlm::r2mlm(mod1b)
+vmod1b$Decompositions
+
+#*** Model 2a: lm, hisei and hisei_gm with clustering
+mod2a <- miceadds::lm.cluster( data=dat, formula=read~hisei_wc+hisei_gm,
+                                   cluster="idschool" )
+
+#*** Model 2b: lmer, multilevel model
+mod2b <- lme4::lmer( data=dat, formula=read~hisei_wc+hisei_gm + (1|idschool) )
+
+# variance explanation
+vmod2b <- r2mlm::r2mlm(mod2b)
+vmod2b$Decompositions
+
+cbind( coef(mod2a), fixef(mod2b))
+ ##  > cbind( coef(mod2a), fixef(mod2b))
+ ##                     [,1]        [,2]
+ ##  (Intercept) 509.1816911 508.0478629
+ ##  hisei_wc      0.7503773   0.7503773
+ ##  hisei_gm      5.8424012   5.5681941
+
 }
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{Cluster robust standard errors}
-\keyword{coef}
-\keyword{vcov}
+%% \keyword{Cluster robust standard errors}
+%% \keyword{coef}
+%% \keyword{vcov}

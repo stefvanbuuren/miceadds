@@ -1,5 +1,5 @@
 %% File Name: mice.impute.ml.lmer.Rd
-%% File Version: 0.26
+%% File Version: 0.386
 
 \name{mice.impute.ml.lmer}
 \alias{mice.impute.ml.lmer}
@@ -27,8 +27,8 @@ to be imputed.
 Several strategies for the specification of the design
 matrix \eqn{\bold{X}} are accommodated. By default, predictors at a lower level
 are automatically aggregated to the higher level and included as further
-predictors to maintain the multilevel structure in the data (Grund et al., xxxx;
-Enders et al., 2016; argument \code{aggregate_automatically=TRUE}). Further,
+predictors to maintain the multilevel structure in the data (Grund, Luedtke & Robitzsch,
+2018; Enders, Mistler & Keller, 2016; argument \code{aggregate_automatically=TRUE}). Further,
 interactions and quadratic effects can be defined by respective arguments
 \code{interactions} and \code{quadratics}. The dimension
 of the matrix of predictors can be reduced by applying partial least squares regression,
@@ -47,7 +47,8 @@ mice.impute.ml.lmer(y, ry, x, type, levels_id, variables_levels=NULL,
     groupcenter.slope=FALSE, draw.fixed=TRUE, random.effects.shrinkage=1e-06,
     glmer.warnings=TRUE, model="continuous", donors=3, match_sampled_pars=FALSE,
     blme_use=FALSE, blme_args=NULL, pls.facs=0, interactions=NULL,
-    quadratics=NULL, min.int.cor=0, min.all.cor=0, pls.print.progress=FALSE, ...)
+    quadratics=NULL, min.int.cor=0, min.all.cor=0, pls.print.progress=FALSE,
+    group_index=NULL, iter_re=0, ...)
 }
 
 
@@ -123,6 +124,11 @@ Minimum absolute value of correlation with outcome for predictors to be retained
   \item{pls.print.progress}{
 Logical indicating whether progress of algorithm should be displayed
 }
+\item{group_index}{Optional vector for group identifiers (internally used
+in \code{mice.impute.bygroup}}
+\item{iter_re}{Number of iterations for sampling random effects in random intercept
+models for continuous outcomes. Using \code{iter_re>0} is necessary for cross-classified
+models with not fully balanced designs.}
   \item{\dots}{
 Further arguments to be passed
 }
@@ -145,9 +151,11 @@ Vector of imputed values
 Enders, C. K., Mistler, S. A., & Keller, B. T. (2016). Multilevel multiple imputation:
 A review and evaluation of joint modeling and chained equations imputation.
 \emph{Psychological Methods, 21}(2), 222-240.
+\doi{10.1037/met0000063}
 
-Grund, S., Luedtke, O., & Robitzsch, A. (xxxx). Multiple imputation of multilevel
-data in organizational research. \emph{Organizational Research Methods, xx}, xxx-xxx.
+Grund, S., Luedtke, O., & Robitzsch, A. (2018). Multiple imputation of multilevel
+data in organizational research. \emph{Organizational Research Methods, 21}(1), 111-149.
+\doi{10.1177/1094428117703686}
 }
 
 
@@ -177,30 +185,27 @@ dat <- data.ma07
 # variables at level 2 (identifier id2): y1 (some missings), y2 (complete)
 # variables at level 3 (identifier id3): z1 (some missings), z2 (complete)
 
-# start with empty imputation
-imp0 <- mice::mice( dat, maxit=0)
-
 #****************************************************************************
 # Imputation model 1
 
 #----- specify levels of variables (only relevent for variables
 #      with missing values)
-variables_levels <- miceadds:::mice_impute_create_type_vector( colnames(dat), value="")
+variables_levels <- miceadds:::mice_imputation_create_type_vector( colnames(dat), value="")
  # leave variables at lowest level blank (i.e., "")
 variables_levels[ c("y1","y2") ] <- "id2"
 variables_levels[ c("z1","z2") ] <- "id3"
 
 #----- specify predictor matrix
-predmat <- imp0$predictorMatrix
+predmat <- mice::make.predictorMatrix(data=dat)
 predmat[, c("id2", "id3") ] <- 0
 # set -2 for cluster identifier for level 3 variable z1
 # because "2lonly" function is used
 predmat[ "z1", "id3" ] <- -2
 
 #----- specify imputation methods
-imputationMethod <- imp0$method
-imputationMethod[c("x1","y1")] <- "ml.lmer"
-imputationMethod[c("z1")] <- "2lonly.norm"
+method <- mice::make.method(data=dat)
+method[c("x1","y1")] <- "ml.lmer"
+method[c("z1")] <- "2lonly.norm"
 
 #----- specify hierarchical structure of imputation models
 levels_id <- list()
@@ -212,14 +217,12 @@ levels_id[["y1"]] <- c("id3")
 #----- specify random slopes
 random_slopes <- list()
 #** random slopes for variable x1
-random_slopes[["x1"]] <- list( "id2"=c("x2","y1"), "id3"=c("y1") )
-#** random slopes for variable y1
-random_slopes[["y1"]] <- list( "id3"=c("z1") )
+random_slopes[["x1"]] <- list( "id2"=c("x2"), "id3"=c("y1") )
 # if no random slopes should be specified, the corresponding entry can be left empty
 # and only a random intercept is used in the imputation model
 
 #----- imputation in mice
-imp1 <- mice::mice( dat, maxit=10, m=5, method=imputationMethod,
+imp1 <- mice::mice( dat, maxit=10, m=5, method=method,
             predictorMatrix=predmat, levels_id=levels_id,  random_slopes=random_slopes,
             variables_levels=variables_levels )
 summary(imp1)
@@ -228,16 +231,16 @@ summary(imp1)
 # Imputation model 2
 
 #----- impute x1 with predictive mean matching and y1 with normally distributed residuals
-model <- list( x1="pmm", y1="continuous" )
+model <- list(x1="pmm", y1="continuous")
 
 #----- assume only random intercepts
 random_slopes <- NULL
 
 #---- create interactions with z2 for all predictors in imputation models for x1 and y1
-interactions <- list( "x1"=z2, "y1"=z2)
+interactions <- list("x1"="z2", "y1"="z2")
 
 #----- imputation in mice
-imp2 <- mice::mice( dat, method=imputationMethod, predictorMatrix=predmat,
+imp2 <- mice::mice( dat, method=method, predictorMatrix=predmat,
                 levels_id=levels_id, random_slopes=random_slopes,
                 variables_levels=variables_levels, model=model, interactions=interactions)
 summary(imp2)

@@ -1,5 +1,5 @@
 %% File Name: mice.impute.2l.latentgroupmean.ml.Rd
-%% File Version: 1.27
+%% File Version: 1.382
 
 \name{mice.impute.2l.latentgroupmean.ml}
 \alias{mice.impute.2l.latentgroupmean.ml}
@@ -11,10 +11,14 @@
 \title{
 Imputation of Latent and Manifest Group Means for Multilevel Data
 }
+
+
 \description{
 The imputation method \code{2l.latentgroupmean} imputes a latent group mean
 assuming an infinite population of subjects within a group
-(see Luedtke et al., 2008 or Croon & van Veldhoven, 2007).
+(Grund, Luedtke & Robitzsch, 2018; see also
+Luedtke, Marsh, Robitzsch, Trautwein, Asparouhov & Muthen, 2008
+ or Croon & van Veldhoven, 2007).
 Therefore, unreliability of group means when treating subjects as
 indicators is taken into account.
 
@@ -106,15 +110,23 @@ A vector of length \code{y} containing imputed group means.
 \references{
 Croon, M. A., & van Veldhoven, M. J. (2007). Predicting group-level outcome
 variables from variables measured at the individual level: a latent variable
-multilevel model. \emph{Psychological Methods}, \bold{12}, 45-57.
+multilevel model. \emph{Psychological Methods, 12}(1), 45-57.
+\doi{10.1037/1082-989X.12.1.45}
+
+Grund, S., Luedtke, O., & Robitzsch, A. (2018). Multiple imputation of missing data at
+level 2: A comparison of fully conditional and joint modeling in multilevel designs.
+\emph{Journal of Educational and Behavioral Statistics, 43}(3), 316-353.
+\doi{10.3102/1076998617738087}
 
 Luedtke, O., Marsh, H. W., Robitzsch, A., Trautwein, U., Asparouhov, T., &
 Muthen, B. (2008). The multilevel latent covariate model: a new, more
 reliable approach to group-level effects in contextual studies.
-\emph{Psychological Methods}, \bold{13}, 203-229.
+\emph{Psychological Methods, 13}(3), 203-229.
+\doi{10.1037/a0012869}
 
 Mislevy, R. J. (1991). Randomization-based inference about latent variables
-from complex samples. \emph{Psychometrika}, \bold{56}, 177-196.
+from complex samples. \emph{Psychometrika, 56}(2), 177-196.
+\doi{10.1007/BF02294457}
 }
 
 %\author{
@@ -146,19 +158,15 @@ dat$M.Mscore <- NA
 # include latent group group for 'Mscore'
 dat$LM.Mscore <- NA    #=> LM: latent group mean
 
-# empty imputation
-imp <- mice( dat, m=0, maxit=0 )
-summary(imp)
-
 # define predictor matrix
-predM <- imp$pred
+predM <- mice::make.predictorMatrix(data=dat)
 # exclude student ISs
 predM[, "idstud"] <- 0
 # idclass is the cluster identifier
 predM[, "idclass" ] <- -2
 
 # define imputation methods
-impMethod <- imp$method
+impMethod <- mice::make.method(data=dat)
 # initialize with norm
 impMethod <- rep( "norm", length(impMethod) )
 names(impMethod) <- names( imp$method )
@@ -207,10 +215,10 @@ predM[ "LM.Mscore", c( "Dscore", "sprengel" ) ] <- 1
 
 # do imputations
 imp <- mice::mice( dat, predictorMatrix=predM, m=3,  maxit=4,
-         imputationMethod=impMethod, allow.na=TRUE, pan.iter=100)
+         method=impMethod, allow.na=TRUE, pan.iter=100)
 }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{mice imputation method}
+%% \keyword{mice imputation method}
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

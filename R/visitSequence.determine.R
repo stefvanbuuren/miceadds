@@ -1,7 +1,7 @@
 ## File Name: visitSequence.determine.R
-## File Version: 0.23
+## File Version: 0.253
 
-########################################################
+
 visitSequence.determine <- function( impMethod, vis, data, maxit=10)
 {
     ## check for character input
@@ -13,7 +13,7 @@ visitSequence.determine <- function( impMethod, vis, data, maxit=10)
         names(vis) <- vis0
     }
     dat <- data
-    ind <- grep( "~ I", impMethod )
+    ind <- grep( '~ I', impMethod )
     I1 <- length(ind)
     # inits
     vis1 <- vis0 <- vis
@@ -23,8 +23,8 @@ visitSequence.determine <- function( impMethod, vis, data, maxit=10)
     while (iter < maxit ){
         vis <- vis1
         for (var.ii in pass_vars){
-            vis1 <- visitSequence_determine_handle_variable( var.ii=var.ii, impMethod=impMethod,
-                        vis1=vis1, dat=dat )
+            vis1 <- visitSequence_determine_handle_variable( var.ii=var.ii,
+                            impMethod=impMethod, vis1=vis1, dat=dat )
         }
         visit_constant <- visitSequence_determine_equal_vecs( v1=vis, v2=vis1 )
         if ( visit_constant ){
@@ -37,5 +37,3 @@ visitSequence.determine <- function( impMethod, vis, data, maxit=10)
     }
     return(vis1)
 }
-########################################################
-

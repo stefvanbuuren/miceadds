@@ -1,5 +1,5 @@
 %% File Name: source.all.Rd
-%% File Version: 0.24
+%% File Version: 0.28
 
 \name{source.all}
 \alias{source.all}
@@ -22,7 +22,7 @@ file.
 }
 
 \usage{
-source.all( path, grepstring="\\\\.R",  print.source=TRUE )
+source.all( path, grepstring="\\\\.R",  print.source=TRUE, file_sep="__"  )
 
 source.Rcpp.all( path, file_names=NULL, ext="\\\\.cpp", excl="RcppExports",
    remove_temp_file=FALSE )
@@ -41,6 +41,8 @@ Which strings should be looked for?
 \item{print.source}{
 An optional logical whether the source process printed on the console?
 }
+\item{file_sep}{String at which file name should be split for looking
+for most recent files}
 \item{file_names}{Optional vector of (parts of) file names}
 \item{ext}{File extension for \pkg{Rcpp} files}
 \item{excl}{String indicating which files should be omitted from sourcing}
@@ -79,9 +81,10 @@ before loading the header file using a line of the form
 # define path
 path <- "c:/myfiles/"
 # source all files containing the string 'Rex'
-source.all( path, "Rex" )}
+source.all( path, "Rex" )
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{R utilities}
+%% \keyword{R utilities}
 %%\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

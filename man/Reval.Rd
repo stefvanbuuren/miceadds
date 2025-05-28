@@ -1,5 +1,5 @@
 %% File Name: Reval.Rd
-%% File Version: 0.22
+%% File Version: 0.24
 
 \name{Reval}
 \alias{Reval}
@@ -43,8 +43,8 @@ Should the string printed on the console?
 command should be evaluated.
 }
 \item{digits}{Number of digits after decimal.}
-\item{Rstring_x}{String corrsponding to an \R object}
-\item{Rstring_y}{String corrsponding to an \R object}
+\item{Rstring_x}{String corresponding to an \R object}
+\item{Rstring_y}{String corresponding to an \R object}
 \item{na.rm}{Logical indicating whether missing values should be removed
 from calculation}
 }
@@ -88,5 +88,5 @@ a
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{R utilities}
+%% \keyword{R utilities}
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

@@ -1,5 +1,5 @@
 ## File Name: mice.1chain.R
-## File Version: 0.61
+## File Version: 0.673
 
 #*** apply mice algorithm in a single chain
 mice.1chain <- function(data, burnin=10, iter=20, Nimp=10,
@@ -37,9 +37,6 @@ mice.1chain <- function(data, burnin=10, iter=20, Nimp=10,
             "******************\n")
     utils::flush.console()
     implist[[1]] <- imp0 <- mice::mice( data, maxit=burnin, m=1,
-                    method=method, where = where,
-                    visitSequence=visitSequence, blots = blots, post=post,
-                    defaultMethod=defaultMethod, printFlag=printFlag, seed=seed,
                     data.init=data.init, ... )
     dat0 <- mice::complete( imp0, 1 )
     chainMean <- t( imp0$chainMean[,,1] )
@@ -55,17 +52,17 @@ mice.1chain <- function(data, burnin=10, iter=20, Nimp=10,
         cat("\n --- Imputation", mm, "| Iterations",
         iterstep0[mm] + 1, "-", iterstep0[mm+1], "\n" )
         utils::flush.console()
-        implist[[mm+1]] <- imp1 <- mice::mice( data, maxit=burnin, m=1,
-                    method=method, where = where,
-                    visitSequence=visitSequence, blots = blots, post=post,
-                    defaultMethod=defaultMethod, printFlag=printFlag, seed=seed,
-                    data.init=data.init, ... )
+        maxit_temp <- (iter-burnin)/Nimp
+        implist[[mm+1]] <- imp1 <- mice::mice( data, maxit=maxit_temp, m=1,
+                    method=method, where=where, visitSequence=visitSequence,
+                    blots=blots, post=post, defaultMethod=defaultMethod,
+                    printFlag=printFlag, seed=seed,
+                    data.init=mice::complete(implist[[mm]], action=1), ... )
         datlist[[mm]] <- dat0 <- mice::complete( imp1, 1 )
         chainMean <- rbind( chainMean, t( imp1$chainMean[,,1] ) )
         chainVar <- rbind( chainVar, t( imp1$chainVar[,,1] ) )
-        rownames(chainVar)[ nrow(chainVar) ] <-
-            rownames(chainMean)[ nrow(chainMean) ] <-
-                paste0( "imp_", mm )
+        rownames(chainVar)[ nrow(chainVar) ] <- paste0( "imp_", mm )
+        rownames(chainMean)[ nrow(chainMean) ] <- paste0( "imp_", mm )
     }
 
     #------ post-processing
@@ -92,39 +89,39 @@ mice.1chain <- function(data, burnin=10, iter=20, Nimp=10,
                                 byrow=TRUE ) )
     vars <- colnames(chainVar)
     VarObs[ is.na(VarObs) ] <- 0
-    chainVarPar <- ( chainVar * matrix( (NMiss[vars]), nrow=cM, ncol=length(vars), byrow=TRUE ) +
-                matrix( ( NObs[vars])* VarObs[vars], nrow=cM, ncol=length(vars), byrow=TRUE ) ) /
-                        ( eps+ matrix( NObs[vars] + NMiss[vars], nrow=cM, ncol=length(vars), byrow=TRUE ) )
+    chainVarPar <- ( chainVar * matrix( (NMiss[vars]), nrow=cM,
+                            ncol=length(vars), byrow=TRUE ) +
+                        matrix( ( NObs[vars])* VarObs[vars], nrow=cM,
+                            ncol=length(vars), byrow=TRUE ) ) /
+                        ( eps+ matrix( NObs[vars] + NMiss[vars], nrow=cM,
+                                ncol=length(vars), byrow=TRUE ) )
     midsobj <- mice::as.mids(datalong, .imp=1)
     imm <- implist[[mm+1]]
     midsobj$predictorMatrix <- imm$predictorMatrix
     midsobj$method <- imm$method
     midsobj$call <- CALL
 
-    res <- list( "midsobj"=midsobj, "datlist"=datlist, "datalong"=datalong,
-                    "implist"=implist, "chainMPar"=chainMPar,
-                    "chainVarPar"=chainVarPar, "chainMean"=chainMean, "chainVar"=chainVar,
-                    "burnin"=burnin, "iter"=iter, "Nimp"=Nimp,
-                    "time"=Sys.time()
-                    )
+    res <- list( midsobj=midsobj, datlist=datlist, datalong=datalong,
+                    implist=implist, chainMPar=chainMPar,
+                    chainVarPar=chainVarPar, chainMean=chainMean, chainVar=chainVar,
+                    burnin=burnin, iter=iter, Nimp=Nimp,
+                    time=Sys.time() )
     res$nobs <- nrow(data)
     res$nvars <- ncol(data)
     class(res) <- "mids.1chain"
     return(res)
 }
-###############################################################################
-###############################################################################
-###############################################################################
-# S3 method summary
+
+#**** S3 method summary
 summary.mids.1chain <- function( object, ... )
 {
-   cat("Multiply imputed dataset using one chain\n\n")
-   cat( paste0( "Number of iterations=", object$iter), "\n")
-   cat( paste0( "Number of burnin-iterations=", object$burnin), "\n")
-   cat( paste0( "Number of imputations=", object$Nimp), "\n")
-   cat( paste0( object$nobs, " cases and ", object$nvars, " variables \n\n" ) )
-   cat("---------\n")
-   print( summary( object$midsobj ) )
+    cat("Multiply imputed dataset using one chain\n\n")
+    cat( paste0( "Number of iterations=", object$iter), "\n")
+    cat( paste0( "Number of burnin-iterations=", object$burnin), "\n")
+    cat( paste0( "Number of imputations=", object$Nimp), "\n")
+    cat( paste0( object$nobs, " cases and ", object$nvars, " variables \n\n" ) )
+    cat("---------\n")
+    print( summary( object$midsobj ) )
 }
 
 #--- print method

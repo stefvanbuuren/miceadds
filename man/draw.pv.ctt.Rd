@@ -1,5 +1,5 @@
 %% File Name: draw.pv.ctt.Rd
-%% File Version: 1.22
+%% File Version: 1.262
 
 \name{draw.pv.ctt}
 \alias{draw.pv.ctt}
@@ -77,7 +77,8 @@ Blackwell, M., Honaker, J., & King, G. (2011).
 missing data}. Technical Report.
 
 Mislevy, R. J. (1991). Randomization-based inference about latent variables
-from complex samples. \emph{Psychometrika}, \bold{56}, 177-196.
+from complex samples. \emph{Psychometrika, 56}(2), 177-196.
+\doi{10.1007/BF02294457}
 }
 
 
@@ -97,13 +98,15 @@ Plausible value imputations can be conducted in \pkg{mice} using the
 imputation method \code{\link{mice.impute.plausible.values}}.
 
 Plausible values can be drawn in \pkg{Amelia} by specifying observation-level
-priors, see \code{\link[Amelia:moPrep]{Amelia::moPrep}} and
-\code{\link[Amelia:amelia]{Amelia::amelia}}.
+priors, see \code{Amelia::moPrep} and
+\code{Amelia::amelia}.
 }
 %% plausible.value.imputation.raschtype
 
 
 \examples{
+\dontrun{
+
 #############################################################################
 # SIMULATED EXAMPLE 1: Scale scores
 #############################################################################
@@ -136,7 +139,6 @@ stats::lm( imp1 ~ x + y )
 imp2 <- miceadds::draw.pv.ctt( y=theta_obs, x=X, alpha=.74 )
 stats::lm( imp2 ~ x + y )
 
-\dontrun{
 #--- plausible value imputation in Amelia package
 library(Amelia)
 
@@ -158,7 +160,7 @@ mitools::MIcombine(mod)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{Plausible value imputation}
-\keyword{Latent variables}
+%% \keyword{Plausible value imputation}
+%% \keyword{Latent variables}
 
 %% \keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

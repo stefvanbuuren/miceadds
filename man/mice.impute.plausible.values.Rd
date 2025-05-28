@@ -1,5 +1,5 @@
 %% File Name: mice.impute.plausible.values.Rd
-%% File Version: 0.45
+%% File Version: 0.54
 
 \name{mice.impute.plausible.values}
 \alias{mice.impute.plausible.values}
@@ -123,14 +123,14 @@ missing data}. Technical Report.
 
 Blackwell, M., Honaker, J., & King, G. (2017a).
 A unified approach to measurement error and missing data: Overview and
-applications. \emph{Sociological Methods & Research}, \bold{46}(3), 303-341.
+applications. \emph{Sociological Methods & Research, 46}(3), 303-341.
 
 Blackwell, M., Honaker, J., & King, G. (2017b).
 A unified approach to measurement error and missing data: Details and
-extensions. \emph{Sociological Methods & Research}, \bold{46}(3), 342-369.
+extensions. \emph{Sociological Methods & Research, 46}(3), 342-369.
 
 Mislevy, R. J. (1991). Randomization-based inference about latent variables
-from complex samples. \emph{Psychometrika}, \bold{56}, 177-196.
+from complex samples. \emph{Psychometrika, 56}, 177-196.
 }
 
 
@@ -138,8 +138,8 @@ from complex samples. \emph{Psychometrika}, \bold{56}, 177-196.
 \note{
 Plausible value imputation is also known as multiple overimputation
 (Blackwell, Honaker & King, 2016a, 2016b) which is implemented
-in the \pkg{Amelia} package, see \code{\link[Amelia:moPrep]{Amelia::moPrep}}
-and \code{\link[Amelia:amelia]{Amelia::amelia}}.
+in the \pkg{Amelia} package, see \code{Amelia::moPrep}
+and \code{Amelia::amelia}.
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
@@ -308,9 +308,9 @@ vars <- colnames(data)
 V <- length(vars)
 predictorMatrix <- 1 - diag(V)
 rownames(predictorMatrix) <- colnames(predictorMatrix) <- vars
-imputationMethod <- rep("norm", V )
-names(imputationMethod) <- vars
-imputationMethod[c("PVA","X2")] <- "plausible.values"
+method <- rep("norm", V )
+names(method) <- vars
+method[c("PVA","X2")] <- "plausible.values"
 
 #-- create argument lists for plausible value imputation
 # likelihood and theta grid of plausible value derived from IRT model
@@ -324,7 +324,7 @@ data.init$X2 <- X.err[,"X2"]
 
 #-- imputation using the mice and miceadds package
 imp1 <- mice::mice( as.matrix(data), predictorMatrix=predictorMatrix, m=4,
-            maxit=6, method=imputationMethod,  allow.na=TRUE,
+            maxit=6, method=method,  allow.na=TRUE,
             theta=theta, like=like, data.init=data.init )
 summary(imp1)
 
@@ -360,12 +360,12 @@ dat1$y <- NULL
 
 cn <- colnames(dat1)
 V <- length(cn)
-imputationMethod <- rep("", length(cn) )
-names(imputationMethod) <- cn
-imputationMethod["theta"] <- "plausible.values"
+method <- rep("", length(cn) )
+names(method) <- cn
+method["theta"] <- "plausible.values"
 
 #-- imputation in mice
-imp <- mice::mice( dat1, maxit=1, m=5, allow.na=TRUE, method=imputationMethod,
+imp <- mice::mice( dat1, maxit=1, m=5, allow.na=TRUE, method=method,
             scale.values=scale.values )
 summary(imp)
 
@@ -379,5 +379,5 @@ summary( mice::pool(mod1) )
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{mice imputation method}
+%% \keyword{mice imputation method}
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

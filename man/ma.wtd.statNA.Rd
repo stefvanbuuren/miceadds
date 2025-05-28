@@ -1,5 +1,5 @@
 %% File Name: ma.wtd.statNA.Rd
-%% File Version: 1.48
+%% File Version: 1.572
 
 \name{ma.wtd.statNA}
 \alias{ma.wtd.statNA}
@@ -9,7 +9,7 @@
 \alias{ma.wtd.meanNA}
 \alias{ma.wtd.sdNA}
 \alias{ma.wtd.skewnessNA}
-\alias{ma.wtd.curtosisNA}
+\alias{ma.wtd.kurtosisNA}
 \alias{ma.wtd.quantileNA}
 
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -34,7 +34,7 @@ ma.wtd.corNA(data, weights=NULL, vars=NULL, method="unbiased" )
 
 ma.wtd.skewnessNA(data, weights=NULL, vars=NULL, method="unbiased" )
 
-ma.wtd.curtosisNA(data, weights=NULL, vars=NULL, method="unbiased" )
+ma.wtd.kurtosisNA(data, weights=NULL, vars=NULL, method="unbiased" )
 
 ma.wtd.quantileNA( data, weights=NULL, vars=NULL, type=7,
           probs=seq(0,1,.25) )
@@ -73,7 +73,7 @@ calculation of descriptive statistics.
 \code{ma.wtd.covNA} \tab weighted covariance matrix \cr
 \code{ma.wtd.corNA} \tab weighted correlation matrix \cr
 \code{ma.wtd.skewnessNA} \tab weighted skewness \cr
-\code{ma.wtd.curtosisNA} \tab weighted (excess) curtosis \cr
+\code{ma.wtd.kurtosisNA} \tab weighted (excess) kurtosis \cr
 }
 
 }
@@ -114,10 +114,10 @@ data(data.ma01)
 dat <- as.matrix(data.ma01[,-c(1:3)])
 
 # weighted mean
-ma.wtd.meanNA( dat, weights=data.ma01$studwgt  )
+ma.wtd.meanNA( dat, weights=data.ma01$studwgt )
 
 # weighted SD
-ma.wtd.sdNA( dat, weights=data.ma01$studwgt  )
+ma.wtd.sdNA( dat, weights=data.ma01$studwgt )
 
 # weighted covariance for selected variables
 ma.wtd.covNA( dat, weights=data.ma01$studwgt, vars=c("books","hisei") )
@@ -125,18 +125,18 @@ ma.wtd.covNA( dat, weights=data.ma01$studwgt, vars=c("books","hisei") )
 # weighted correlation
 ma.wtd.corNA( dat, weights=data.ma01$studwgt )
 
-# weighted curtosis
+\dontrun{
+# weighted skewness
 ma.wtd.skewnessNA( dat[,"books"], weights=data.ma01$studwgt )
 # compare with result in TAM
 TAM::weighted_skewness( x=dat[,"books"], w=data.ma01$studwgt )
 
-# weighted curtosis
-ma.wtd.curtosisNA( dat, weights=data.ma01$studwgt, vars=c("books","hisei") )
-# result in TAM
-TAM::weighted_curtosis( dat[,"books"], w=data.ma01$studwgt )
-TAM::weighted_curtosis( dat[,"hisei"], w=data.ma01$studwgt )
+# weighted kurtosis
+ma.wtd.kurtosisNA( dat, weights=data.ma01$studwgt, vars=c("books","hisei") )
+# compare with TAM
+TAM::weighted_kurtosis( dat[,"books"], w=data.ma01$studwgt )
+TAM::weighted_kurtosis( dat[,"hisei"], w=data.ma01$studwgt )
 
-\dontrun{
 #############################################################################
 # EXAMPLE 2: Weighted statistics multiply imputed dataset
 #############################################################################
@@ -148,7 +148,7 @@ dat <- data.ma05
 # do imputations
 resp <- dat[, - c(1:2) ]
 # object of class mids
-imp <- mice::mice( resp, imputationMethod="norm", maxit=3, m=5 )
+imp <- mice::mice( resp, method="norm", maxit=3, m=5 )
 # object of class datlist
 datlist <- miceadds::mids2datlist( imp )
 # object of class imputationList
@@ -188,7 +188,7 @@ diag(predM) <- 0
 predM[, vars_unused ] <- 0
 
 # object of class mids.nmi
-imp1 <- miceadds::mice.nmi( datlist, imputationMethod=impMethod, predictorMatrix=predM,
+imp1 <- miceadds::mice.nmi( datlist, method=impMethod, predictorMatrix=predM,
                 m=4, maxit=3 )
 # object of class nested.datlist
 datlist <- miceadds::mids2datlist(imp1)
@@ -235,11 +235,10 @@ bdat <- BIFIE.data( data.list=data.timss4, wgt=data.timss4[[1]][[1]]$TOTWGT,
 summary(bdat)
 # skewness
 ma.wtd.skewnessNA( bdat, vars=c("ASMMAT", "books" ) )
-
 }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 % \keyword{Utility function}
-\keyword{Descriptives}
+%% \keyword{Descriptives}
 %%\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

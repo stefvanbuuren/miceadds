@@ -1,5 +1,5 @@
 %% File Name: cxxfunction.copy.Rd
-%% File Version: 0.20
+%% File Version: 0.24
 
 \name{cxxfunction.copy}
 \alias{cxxfunction.copy}
@@ -33,8 +33,9 @@ Name of the output Rcpp function to be generated
 %% ...
 %}
 \references{
-Eddelbuettel, D. & Francois, R. (2011). Rcpp: Seamless R and C++ integration.
-\emph{Journal of Statistical Software}, \bold{40(8)}, 1-18.
+Eddelbuettel, D. & Francois, R. (2011). \pkg{Rcpp}: Seamless \R and \pkg{C++} integration.
+\emph{Journal of Statistical Software, 40}(8), 1-18.
+\doi{10.18637/jss.v040.i08}
 }
 
 
@@ -91,5 +92,5 @@ calclogis(m1)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{R utilities}
+%% \keyword{R utilities}
 % \keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

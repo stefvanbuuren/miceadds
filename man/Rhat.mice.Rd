@@ -1,5 +1,5 @@
 %% File Name: Rhat.mice.Rd
-%% File Version: 0.10
+%% File Version: 0.12
 
 \name{Rhat.mice}
 \alias{Rhat.mice}
@@ -53,7 +53,7 @@ data(nhanes, package="mice")
 set.seed(9090)
 
 # nhanes 3 parallel chains
-imp1 <- mice::mice( nhanes, m=3, maxit=10, imputationMethod=rep("norm", 4 ))
+imp1 <- mice::mice( nhanes, m=3, maxit=10, method=rep("norm", 4 ))
 miceadds::Rhat.mice( imp1 )
   ##     variable MissProp Rhat.M.imp Rhat.Var.imp
   ##   1      bmi       36  1.0181998     1.155807
@@ -63,5 +63,5 @@ miceadds::Rhat.mice( imp1 )
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{Rhat statistic}
-\keyword{Convergence}% __ONLY ONE__ keyword per line
+%% \keyword{Rhat statistic}
+%% \keyword{Convergence}% __ONLY ONE__ keyword per line

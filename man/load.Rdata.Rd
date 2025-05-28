@@ -1,5 +1,5 @@
 %% File Name: load.Rdata.Rd
-%% File Version: 0.20
+%% File Version: 0.22
 
 \name{load.Rdata}
 \alias{load.Rdata}
@@ -21,7 +21,7 @@ loads the object only specified environments. Hence, usage of
 \usage{
 load.Rdata(filename, objname)
 
-load.Rdata2(filename, path=getwd())
+load.Rdata2(filename, path=getwd(), RDS=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -32,6 +32,7 @@ Rdata file (matrix or data frame)
 Object name. This object will be a global variable in \R.
 }
 \item{path}{Directory from which the dataset should be loaded}
+\item{RDS}{logical if object is saved as an RDS object}
 }
 
 %\details{
@@ -76,5 +77,5 @@ dat.s3 <- miceadds::load.Rdata2( filename="data_s3.Rdata")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{R utilities}
+%% \keyword{R utilities}
 %%\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

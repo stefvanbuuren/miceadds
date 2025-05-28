@@ -1,5 +1,5 @@
 %% File Name: data.graham.Rd
-%% File Version: 0.21
+%% File Version: 0.24
 
 \name{data.graham}
 \alias{data.graham}
@@ -147,6 +147,7 @@ http://methodology.psu.edu/pubs/books/missing.
 
 \references{
 Graham, J. W. (2012). \emph{Missing data}. New York: Springer.
+\doi{10.1007/978-1-4614-4018-5}
 }
 
 \examples{
@@ -181,7 +182,7 @@ M <- 7  # number of imputations
 impM <- rep("norm", V)
 names(impM) <- vars
 # mice imputation
-imp1a <- mice::mice( dat, imputationMethod=impM, m=M, maxit=4 )
+imp1a <- mice::mice( dat, method=impM, m=M, maxit=4 )
 summary(imp1a)
 # convert into a list of datasets
 datlist1a <- miceadds::mids2datlist(imp1a)
@@ -268,4 +269,4 @@ summary( miceadds::NMIcombine(qhat=res2a, NMI=FALSE ) )
 summary( miceadds::NMIcombine(qhat=res2b, NMI=FALSE ) )
 }
 }
-\keyword{datasets}
+%% \keyword{datasets}

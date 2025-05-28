@@ -1,5 +1,5 @@
 %% File Name: tw.imputation.Rd
-%% File Version: 0.19
+%% File Version: 0.253
 
 \name{tw.imputation}
 \alias{tw.imputation}
@@ -11,7 +11,7 @@ Two-Way Imputation
 }
 \description{
 Two-way imputation using the simple method of Sijtsma and van der Ark (2003)
-and the MCMC based imputation of van Ginkel et al. (2007).
+and the MCMC based imputation of van Ginkel, van der Ark, Sijtsma and Vermunt (2007).
 }
 \usage{
 tw.imputation(data, integer=FALSE)
@@ -51,12 +51,14 @@ A matrix with original and imputed values
 \references{
 Sijtsma, K., & Van der Ark, L. A. (2003).
 Investigation and treatment of missing item scores in test and questionnaire
-data. \emph{Multivariate Behavioral Research}, \bold{38}, 505-528.
+data. \emph{Multivariate Behavioral Research, 38}(4), 505-528.
+\doi{10.1207/s15327906mbr3804_4}
 
 Van Ginkel, J. R., Van der Ark, A., Sijtsma, K., & Vermunt, J. K. (2007).
 Two-way imputation: A Bayesian method for estimating missing scores in tests
 and questionnaires, and an accurate approximation.
-\emph{Computational Statistics & Data Analysis}, \bold{51}, 4013-4027.
+\emph{Computational Statistics & Data Analysis, 51}(8), 4013-4027.
+\doi{10.1016/j.csda.2006.12.022}
 }
 
 
@@ -70,10 +72,11 @@ and questionnaires, and an accurate approximation.
 \seealso{
 The two-way imputation method is also implemented in
 the \code{TestDataImputation::Twoway} function of the
-\pkg{TestDataImputation} package.
+\bold{TestDataImputation} package.
 }
 
 \examples{
+\dontrun{
 #############################################################################
 # EXAMPLE 1: Two-way imputation data.internet
 #############################################################################
@@ -92,7 +95,6 @@ dat.imp[ 278:281,]
   ##   280   7 4.000000 7.00000 7.000000
   ##   281   4 3.000000 5.00000 5.000000
 
-\dontrun{
 #***
 # Model 2: Two-way imputation method using MCMC
 dat.imp <- miceadds::tw.mcmc.imputation( data, iter=3)
@@ -106,5 +108,5 @@ dat.imp[ 278:281,]
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{Two-way imputation}
+%% \keyword{Two-way imputation}
 %% \keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

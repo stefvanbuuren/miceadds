@@ -1,5 +1,5 @@
 %% File Name: files_move.Rd
-%% File Version: 0.15
+%% File Version: 0.181
 
 \name{files_move}
 \alias{files_move}
@@ -9,11 +9,12 @@ Moves Files from One Directory to Another Directory
 }
 \description{
 Moves older (defined in alphanumeric order) files from one
-directory to another directory.
+directory to another directory. If directories do not exist,
+they will be automatically created.
 }
 
 \usage{
-files_move(path1, path2, file_sep="__", pattern=NULL)
+files_move(path1, path2, file_sep="__", pattern=NULL, path2_name="__ARCH")
 }
 
 
@@ -31,6 +32,9 @@ Separator for files
   \item{pattern}{
 Pattern in file names to be searched for
 }
+\item{path2_name}{Part of the name of \code{path2} if argument
+\code{path2} is missing. If \code{path2} is not provided, it has to be
+a subdirectory of \code{path1}.}
 }
 
 %\details{

@@ -1,5 +1,5 @@
 %% File Name: complete.miceadds.Rd
-%% File Version: 0.18
+%% File Version: 0.214
 
 \name{complete.miceadds}
 \alias{complete.mids.nmi}
@@ -17,14 +17,18 @@ Creates imputed dataset from a \code{mids.nmi} or \code{mids.1chain} object.
 }
 
 \usage{
-complete.mids.nmi( x, action=c(1,1) )
+\method{complete}{mids.nmi}(data, action=c(1,1), ...)
 
-complete.mids.1chain( x, action=1 )
+\method{complete}{mids.1chain}(data, action=1, ...)
 }
+
+% complete.mids.nmi( x, action=c(1,1) )
+
+% complete.mids.1chain( x, action=1 )
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-\item{x}{
+\item{data}{
 Object of class \code{mids.nmi} (for \code{complete.mids.nmi}) or
 \code{mids.1chain} (for \code{complete.mids.1chain})
 }
@@ -33,6 +37,7 @@ A vector of length two indicating to indices of between and within
 imputed dataset for for \code{complete.mids.nmi} and an integer for the
 index of imputed dataset for \code{complete.mids.1chain}.
 }
+\item{\dots}{More arguments to be passed}
 }
 
 %\details{
@@ -77,7 +82,7 @@ datlist <- data.timss2
 M <- length(datlist)
 for (ll in 1:M){
     datlist[[ll]] <- datlist[[ll]][, -c(1:4) ]
-                }
+}
 
 #***************
 # (1) nested multiple imputation using mice
@@ -103,7 +108,7 @@ data(nhanes, package="mice")
 
 # nhanes data in one chain
 imp1 <- miceadds::mice.1chain( nhanes, burnin=5, iter=40, Nimp=4,
-          imputationMethod=rep("norm", 4 ) )
+            method=rep("norm", 4 ) )
 
 # extract first imputed dataset
 dati1 <- miceadds::complete.mids.1chain( imp1, action=1 )
@@ -111,5 +116,5 @@ dati1 <- miceadds::complete.mids.1chain( imp1, action=1 )
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{R utilities}
+%% \keyword{R utilities}
 %%\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

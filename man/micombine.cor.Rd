@@ -1,5 +1,5 @@
 %% File Name: micombine.cor.Rd
-%% File Version: 0.36
+%% File Version: 0.416
 
 \name{micombine.cor}
 \alias{micombine.cor}
@@ -38,7 +38,7 @@ calculation of the Pearson correlation.
 a nested multiple imputation.}
 \item{partial}{Formula object for computing partial correlations. The
 terms which should be residualized are written in the formula
-object \code{partial}.}
+object \code{partial}. Alternatively, it can be a vector of variables.}
 }
 %\details{
 %%  ~~ If necessary, more details than the description above ~~
@@ -79,7 +79,8 @@ set.seed(9090)
 
 # nhanes data in one chain
 imp.mi <- miceadds::mice.1chain( nhanes, burnin=5, iter=20, Nimp=4,
-                  imputationMethod=rep("norm", 4 ) )
+                  method=rep("norm", 4) )
+
 # correlation coefficients of variables 4, 2 and 3 (indexed in nhanes data)
 res <- miceadds::micombine.cor(mi.res=imp.mi, variables=c(4,2,3) )
   ##     variable1 variable2       r    rse fisher_r fisher_rse    fmi       t      p
@@ -101,6 +102,12 @@ res2 <- miceadds::micombine.cov(mi.res=imp.mi, variables=c(4,2,3) )
 # inference can also be conducted for non-imputed data
 res3 <- miceadds::micombine.cov(mi.res=nhanes, variables=c(4,2,3) )
 
+# partial correlation residualizing bmi and chl
+res4 <- miceadds::micombine.cor(mi.res=imp.mi, variables=c("age","hyp" ),
+                  partial=~bmi+chl )
+res4
+# alternatively, 'partial' can also be defined as c('age','hyp')
+
 #############################################################################
 # EXAMPLE 2: nhanes data | comparing different correlation coefficients
 #############################################################################
@@ -109,7 +116,7 @@ library(psych)
 library(mitools)
 
 # imputing data
-imp1 <- mice::mice( nhanes,  imputationMethod=rep("norm", 4 ) )
+imp1 <- mice::mice( nhanes,  method=rep("norm", 4 ) )
 summary(imp1)
 
 #*** Pearson correlation
@@ -131,9 +138,9 @@ res3 <- with( data=imp1,
 # extract estimates
 betas <- lapply( res3$analyses, FUN=function(ll){ ll$r[1,2] } )
 # extract variances
-vars <- lapply( res3$analyses, FUN=function(ll){ ll$se^2 } )
+vars <- lapply( res3$analyses, FUN=function(ll){ (ll$se[1,2])^2 } )
 # Rubin inference
-tau_comb <- mitools::MIcombine( betas, vars )
+tau_comb <- mitools::MIcombine( results=betas, variances=vars )
 summary(tau_comb)
 
 #############################################################################
@@ -152,6 +159,6 @@ res2 <- miceadds::micombine.cor(mi.res=datlist, variables=c("lang", "migrant", "
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{Decriptives}
-\keyword{mids}
+%% \keyword{Decriptives}
+%% \keyword{mids}
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

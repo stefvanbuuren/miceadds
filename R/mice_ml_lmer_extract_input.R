@@ -1,15 +1,19 @@
 ## File Name: mice_ml_lmer_extract_input.R
-## File Version: 0.14
+## File Version: 0.297
 
 mice_ml_lmer_extract_input <- function(pos, levels_id, random_slopes, variables_levels,
-        pls.facs, min.int.cor, min.all.cor, interactions, quadratics, model )
+        pls.facs, min.int.cor, min.all.cor, interactions, quadratics, model,
+        group_index=NULL, iter_re=0)
 {
     res <- mice_imputation_get_states( pos=pos )
     vname <- res$vname
     imp.temp <- res$newstate
-    p <- get("p", envir=pos )
-    type <- p$predictorMatrix[ vname, ]
-    data <- p$data
+    predictorMatrix <- ma_exists_get(x='predictorMatrix', pos=pos)
+    type <- predictorMatrix[ vname, ]
+    data <- ma_exists_get(x='data', pos=pos)
+    if ( ! is.null(group_index) ){
+        data <- data[ group_index,, drop=FALSE ]
+    }
     #--- level identifiers
     if ( is.list( levels_id ) ){
         levels_id <- levels_id[[ vname ]]
@@ -34,10 +38,13 @@ mice_ml_lmer_extract_input <- function(pos, levels_id, random_slopes, variables_
     pls.facs <- mice_imputation_extract_list_arguments( micearg=pls.facs, vname=vname,
                         miceargdefault=20 )
     # correlations interactions
-    min.int.cor <- mice_imputation_extract_list_arguments( micearg=min.int.cor, vname=vname,
-                                miceargdefault=0 )
-    min.all.cor <- mice_imputation_extract_list_arguments( micearg=min.all.cor, vname=vname,
-                                miceargdefault=0 )
+    min.int.cor <- mice_imputation_extract_list_arguments( micearg=min.int.cor,
+                        vname=vname, miceargdefault=0 )
+    min.all.cor <- mice_imputation_extract_list_arguments( micearg=min.all.cor,
+                        vname=vname, miceargdefault=0 )
+
+    iter_re <- mice_imputation_extract_list_arguments( micearg=iter_re, vname=vname,
+                        miceargdefault=0 )
 
     #--- interactions
     interactions <- mice_imputation_extract_arguments_list(v1=interactions, vname=vname)
@@ -47,14 +54,15 @@ mice_ml_lmer_extract_input <- function(pos, levels_id, random_slopes, variables_
 
     #--- model
     model <- mice_imputation_extract_list_arguments( micearg=model, vname=vname,
-                                miceargdefault="continuous" )
+                        miceargdefault="continuous" )
 
     #--- output
-    res <- list( vname=vname, p=p, type=type, data=data, levels_id=levels_id,
+    res <- list( vname=vname, type=type, data=data, levels_id=levels_id,
                     random_slopes=random_slopes, imp.temp=imp.temp,
-                    vname_level=vname_level, pls.facs=pls.facs, min.int.cor=min.int.cor,
-                    min.all.cor=min.all.cor, interactions=interactions, quadratics=quadratics,
-                    model=model )
+                    vname_level=vname_level, pls.facs=pls.facs,
+                    min.int.cor=min.int.cor, min.all.cor=min.all.cor,
+                    interactions=interactions, quadratics=quadratics,
+                    model=model, predictorMatrix=predictorMatrix, iter_re=iter_re )
     return(res)
 }
 

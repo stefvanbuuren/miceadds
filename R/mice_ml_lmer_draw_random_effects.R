@@ -1,15 +1,17 @@
 ## File Name: mice_ml_lmer_draw_random_effects.R
-## File Version: 0.08
+## File Version: 0.178
 
 
 mice_ml_lmer_draw_random_effects <- function( clus, clus_unique, y, ry, fl, fit_vc,
-        re0, ngr, used_slopes, levels_id_ll, x, random.effects.shrinkage)
+        re0, ngr, used_slopes, levels_id_ll, x, random.effects.shrinkage, iter_re=0)
 {
 
     # clusters without missing values
     clus0 <- clus[!ry]
+
     # ind <- match( clus0, clus_unique)
     index_clus <- match( clus, clus_unique)
+
     # clusters with at least one observation
     clus_obs <- match( unique(fl), clus_unique)
 
@@ -28,6 +30,9 @@ mice_ml_lmer_draw_random_effects <- function( clus, clus_unique, y, ry, fl, fit_
     u <- mice_multilevel_imputation_draw_random_effects( mu=re, Sigma=pv,
                 ridge=random.effects.shrinkage )
     used_slopes_ll <- used_slopes[[ levels_id_ll ]]
+    if (( length(used_slopes_ll)>0) & iter_re>0 ){
+        stop("Cannot apply 'iter_re' in random slope models!\n")
+    }
     z0 <- matrix(1, nrow=length(y), ncol=1 )
     if ( length(used_slopes_ll) > 0 ){
         z0 <- cbind( z0, x[, used_slopes_ll ] )

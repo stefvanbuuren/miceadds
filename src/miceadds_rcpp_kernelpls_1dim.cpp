@@ -1,5 +1,5 @@
 //// File Name: miceadds_rcpp_kernelpls_1dim.cpp
-//// File Version: 3.15
+//// File Version: 3.172
 
 
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -22,13 +22,14 @@ Rcpp::List kernelplsaux(Rcpp::NumericMatrix Yr, Rcpp::NumericMatrix Xr,
     int nresp = Yr.ncol();
     int ncomp = nc[0];
     double eps_add = 1e-10;
-    arma::mat X(Xr.begin(), nobj, npred, false);       // reuses memory and avoids extra copy
+    arma::mat X(Xr.begin(), nobj, npred, false);
+                // reuses memory and avoids extra copy
     arma::mat Y(Yr.begin(), nobj, nresp, false);
     // define matrices
-    arma::mat R = arma::zeros( npred, ncomp  );
-    arma::mat P = arma::zeros( npred, ncomp  );
-    arma::mat tQ = arma::zeros( ncomp, nresp  );
-    arma::mat B = arma::zeros( npred, ncomp  );
+    arma::mat R = arma::zeros( npred, ncomp );
+    arma::mat P = arma::zeros( npred, ncomp );
+    arma::mat tQ = arma::zeros( ncomp, nresp );
+    arma::mat B = arma::zeros( npred, ncomp );
     // auxiliary matrices;
     arma::mat wa;
     arma::mat ra;
@@ -56,7 +57,8 @@ Rcpp::List kernelplsaux(Rcpp::NumericMatrix Yr, Rcpp::NumericMatrix Xr,
     for (int aa=0;aa<ncomp;++aa){
         //    ## 2.
         //    w.a <- XtY / sqrt(c(crossprod(XtY)))
-        wa = arma::mat( XtY / arma::repmat( arma::sqrt( arma::trans(XtY) * XtY + eps_add ), npred,1) );
+        wa = arma::mat( XtY / arma::repmat( arma::sqrt(
+                                arma::trans(XtY) * XtY + eps_add ), npred,1) );
         //        ## 3.
         //        r.a <- w.a
         //            for (j in 1:(a - 1))

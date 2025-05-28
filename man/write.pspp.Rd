@@ -1,5 +1,5 @@
 %% File Name: write.pspp.Rd
-%% File Version: 0.33
+%% File Version: 0.35
 
 \name{write.pspp}
 \alias{write.pspp}
@@ -66,7 +66,7 @@ The code was adapted from
 \seealso{
 See also \code{\link[foreign:write.foreign]{foreign::write.foreign}}.
 
-For writing sav files see also \code{\link[haven:write_sav]{haven::write_sav}}
+For writing sav files see also \code{haven::write_sav}
 and  \code{\link[sjlabelled:write_spss]{sjlabelled::write_spss}}.
 
 For convenient viewing \emph{sav} files we recommend the freeware
@@ -123,6 +123,6 @@ sjlabelled::write_spss( data, "example_data1b.sav" )
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{Utility function}
+%% \keyword{Utility function}
 %% \keyword{SPSS}
-\keyword{PSPP (SPSS)}
+%% \keyword{PSPP (SPSS)}

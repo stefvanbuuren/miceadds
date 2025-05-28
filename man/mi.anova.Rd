@@ -1,5 +1,5 @@
 %% File Name: mi.anova.Rd
-%% File Version: 0.23
+%% File Version: 0.265
 
 \name{mi.anova}
 \alias{mi.anova}
@@ -10,7 +10,7 @@ Analysis of Variance for Multiply Imputed Data Sets (Using the \eqn{D_2} Statist
 \description{
 This function combines \eqn{F} values from analysis of variance using
 the \eqn{D_2} statistic which is based on combining \eqn{\chi^2} statistics
-(see Allison, 2001, Grund et al., 2016;
+(see Allison, 2001, Grund, Luedtke & Robitzsch, 2016;
 \code{\link{micombine.F}}, \code{\link{micombine.chisquare}}).
 }
 \usage{
@@ -46,7 +46,8 @@ Allison, P. D. (2002). \emph{Missing data}. Newbury Park, CA: Sage.
 
 Grund, S., Luedtke, O., & Robitzsch, A. (2016). Pooling ANOVA results from
 multiply imputed datasets: A simulation study.
-\emph{Methodology, 12}, 75-88.
+\emph{Methodology, 12}(3), 75-88.
+\doi{10.1027/1614-2241/a000111}
 }
 
 
@@ -72,6 +73,7 @@ The \eqn{D_1}, \eqn{D_2} and \eqn{D_3} statistics are also included in the
 }
 
 \examples{
+\dontrun{
 #############################################################################
 # EXAMPLE 1: nhanes2 data | two-way ANOVA
 #############################################################################
@@ -85,6 +87,14 @@ set.seed(9090)
 mi.res <- miceadds::mice.1chain( nhanes2, burnin=4, iter=20, Nimp=8 )
 # 2-way analysis of variance (type 2)
 an2a <- miceadds::mi.anova(mi.res=mi.res, formula="bmi ~ age * chl" )
+
+# test of interaction effects using mitml::testModels()
+mod1 <- with( mi.res, stats::lm( bmi ~ age*chl ) )
+mod0 <- with( mi.res, stats::lm( bmi ~ age+chl ) )
+
+mitml::testModels(model=mod1$analyses, null.model=mod0$analyses, method="D1")
+mitml::testModels(model=mod1$analyses, null.model=mod0$analyses, method="D2")
+
 # 2-way analysis of variance (type 3)
 an2b <- miceadds::mi.anova(mi.res=mi.res, formula="bmi ~ age * chl", type=3)
 
@@ -98,9 +108,10 @@ lm1 <- stats::lm( bmi ~ age * chl, data=dat1 )
 summary( stats::aov( lm1 ) )
 # type 3 ANOVA
 lm2 <- stats::lm( bmi ~ age * chl, data=dat1, contrasts=list(age=contr.sum))
-car::Anova( lm2, type=3)
+car::Anova(mod=lm2, type=3)
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ANOVA}
-\keyword{mids}
+%% \keyword{ANOVA}
+%% \keyword{mids}
